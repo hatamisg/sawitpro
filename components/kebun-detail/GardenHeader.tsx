@@ -8,9 +8,10 @@ import { id } from "date-fns/locale";
 
 interface GardenHeaderProps {
   garden: Garden;
+  onEdit?: () => void;
 }
 
-export default function GardenHeader({ garden }: GardenHeaderProps) {
+export default function GardenHeader({ garden, onEdit }: GardenHeaderProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Baik":
@@ -66,7 +67,7 @@ export default function GardenHeader({ garden }: GardenHeaderProps) {
         </div>
 
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={onEdit}>
             <Edit className="h-4 w-4 mr-2" />
             Edit
           </Button>

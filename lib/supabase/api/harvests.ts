@@ -65,9 +65,37 @@ export async function createHarvest(harvest: any) {
   try {
     const harvestData = convertToDb(harvest);
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('harvests')
       .insert(harvestData)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return {
+      data: data ? convertFromDb(data) : null,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: handleSupabaseError(error),
+    };
+  }
+}
+
+/**
+ * Update an existing harvest
+ */
+export async function updateHarvest(id: string, harvest: any) {
+  try {
+    const harvestData = convertToDb(harvest);
+
+    const { data, error } = await (supabase as any)
+      .from('harvests')
+      .update(harvestData)
+      .eq('id', id)
       .select()
       .single();
 

@@ -15,7 +15,7 @@ async function seedDatabase() {
     // 1. Seed Gardens
     console.log('📍 Seeding gardens...');
     const gardenPromises = gardens.map(async (garden) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('gardens')
         .insert({
           id: garden.id,
@@ -46,7 +46,7 @@ async function seedDatabase() {
     // 2. Seed Tasks
     console.log('📋 Seeding tasks...');
     const taskPromises = tasks.map(async (task) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('tasks')
         .insert({
           id: task.id,
@@ -75,7 +75,7 @@ async function seedDatabase() {
     // 3. Seed Harvests
     console.log('🌾 Seeding harvests...');
     const harvestPromises = harvests.map(async (harvest) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('harvests')
         .insert({
           id: harvest.id,
@@ -102,7 +102,7 @@ async function seedDatabase() {
     // 4. Seed Issues
     console.log('⚠️  Seeding issues...');
     const issuePromises = issues.map(async (issue) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('issues')
         .insert({
           id: issue.id,
@@ -133,7 +133,7 @@ async function seedDatabase() {
     // 5. Seed Maintenances
     console.log('🔧 Seeding maintenances...');
     const maintenancePromises = maintenances.map(async (maintenance) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('maintenances')
         .insert({
           id: maintenance.id,
@@ -164,7 +164,7 @@ async function seedDatabase() {
     // 6. Seed Documentation
     console.log('📄 Seeding documentation...');
     const docPromises = documentation.map(async (doc) => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('documentation')
         .insert({
           id: doc.id,

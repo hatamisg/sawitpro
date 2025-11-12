@@ -78,7 +78,7 @@ export async function createMaintenance(maintenance: any) {
   try {
     const maintenanceData = convertToDb(maintenance) as MaintenanceInsert;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('maintenances')
       .insert(maintenanceData)
       .select()
@@ -105,7 +105,7 @@ export async function updateMaintenance(id: string, maintenance: any) {
   try {
     const maintenanceData = convertToDb(maintenance) as MaintenanceUpdate;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('maintenances')
       .update(maintenanceData)
       .eq('id', id)
@@ -137,7 +137,7 @@ export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' 
       updateData.tanggal_selesai = new Date().toISOString().split('T')[0];
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('maintenances')
       .update(updateData)
       .eq('id', id)

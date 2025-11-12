@@ -1,16 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Issue } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, AlertTriangle, CheckCircle } from "lucide-react";
+import { Plus, AlertTriangle, CheckCircle, Edit, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { toast } from "sonner";
 import Image from "next/image";
+import AddIssueModal from "../modals/AddIssueModal";
+import EditIssueModal from "../modals/EditIssueModal";
+import { createIssue, updateIssue, updateIssueStatus, deleteIssue, getIssuesByGarden } from "@/lib/supabase/api/issues";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface TabMasalahProps {
   gardenId: string;
@@ -20,6 +33,28 @@ interface TabMasalahProps {
 export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasalahProps) {
   const [issues, setIssues] = useState<Issue[]>(initialIssues);
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+  const [issueToDelete, setIssueToDelete] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch issues from Supabase on mount
+  useEffect(() => {
+    fetchIssues();
+  }, [gardenId]);
+
+  const fetchIssues = async () => {
+    setIsLoading(true);
+    const { data, error } = await getIssuesByGarden(gardenId);
+    if (data) {
+      setIssues(data);
+    } else if (error) {
+      toast.error("Gagal memuat masalah: " + error);
+      setIssues(initialIssues);
+    }
+    setIsLoading(false);
+  };
 
   const filteredIssues = issues.filter((issue) =>
     statusFilter === "all" || issue.status === statusFilter
@@ -41,20 +76,68 @@ export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasal
     }
   };
 
-  const handleToggleStatus = (issueId: string) => {
-    setIssues((prev) =>
-      prev.map((i) =>
-        i.id === issueId
-          ? {
-              ...i,
-              status: i.status === "Open" ? "Resolved" : "Open",
-              tanggalSelesai: i.status === "Open" ? new Date() : undefined,
-              updatedAt: new Date(),
-            }
-          : i
-      )
-    );
-    toast.success("Status masalah berhasil diubah!");
+  const handleAddIssue = async (issueData: any) => {
+    const { data, error } = await createIssue({
+      ...issueData,
+      gardenId,
+    });
+
+    if (data) {
+      setIssues((prev) => [...prev, data]);
+      setIsAddModalOpen(false);
+      toast.success("Masalah berhasil dilaporkan!");
+    } else if (error) {
+      toast.error("Gagal melaporkan masalah: " + error);
+    }
+  };
+
+  const handleEditIssue = async (issueData: any) => {
+    if (!selectedIssue) return;
+
+    const { data, error } = await updateIssue(selectedIssue.id, {
+      ...issueData,
+      gardenId,
+    });
+
+    if (data) {
+      setIssues((prev) => prev.map((i) => (i.id === selectedIssue.id ? data : i)));
+      setIsEditModalOpen(false);
+      setSelectedIssue(null);
+      toast.success("Masalah berhasil diperbarui!");
+    } else if (error) {
+      toast.error("Gagal memperbarui masalah: " + error);
+    }
+  };
+
+  const handleToggleStatus = async (issue: Issue) => {
+    const newStatus = issue.status === "Open" ? "Resolved" : "Open";
+    const { data, error } = await updateIssueStatus(issue.id, newStatus);
+
+    if (data) {
+      setIssues((prev) => prev.map((i) => (i.id === issue.id ? data : i)));
+      toast.success("Status masalah berhasil diubah!");
+    } else if (error) {
+      toast.error("Gagal mengubah status: " + error);
+    }
+  };
+
+  const handleDeleteIssue = async () => {
+    if (!issueToDelete) return;
+
+    const { success, error } = await deleteIssue(issueToDelete);
+
+    if (success) {
+      setIssues((prev) => prev.filter((i) => i.id !== issueToDelete));
+      setIssueToDelete(null);
+      toast.success("Masalah berhasil dihapus!");
+    } else if (error) {
+      toast.error("Gagal menghapus masalah: " + error);
+    }
+  };
+
+  const openEditModal = (issue: Issue) => {
+    setSelectedIssue(issue);
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -67,7 +150,7 @@ export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasal
               <AlertTriangle className="h-5 w-5 text-red-600" />
               Issue Tracking
             </CardTitle>
-            <Button>
+            <Button onClick={() => setIsAddModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Laporkan Masalah
             </Button>
@@ -126,6 +209,24 @@ export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasal
                       </Badge>
                     </div>
                   </div>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => openEditModal(issue)}
+                      className="h-8 w-8 p-0"
+                    >
+                      <Edit className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => setIssueToDelete(issue.id)}
+                      className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </div>
 
                 <p className="text-sm text-gray-700 mb-3">{issue.deskripsi}</p>
@@ -169,7 +270,7 @@ export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasal
                   size="sm"
                   variant={issue.status === "Open" ? "default" : "outline"}
                   className="w-full"
-                  onClick={() => handleToggleStatus(issue.id)}
+                  onClick={() => handleToggleStatus(issue)}
                 >
                   {issue.status === "Open" ? (
                     <>
@@ -188,6 +289,41 @@ export default function TabMasalah({ gardenId, issues: initialIssues }: TabMasal
           ))
         )}
       </div>
+
+      {/* Modals */}
+      <AddIssueModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddIssue}
+      />
+
+      <EditIssueModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedIssue(null);
+        }}
+        onSubmit={handleEditIssue}
+        issue={selectedIssue}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!issueToDelete} onOpenChange={() => setIssueToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus masalah ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteIssue} className="bg-red-600 hover:bg-red-700">
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

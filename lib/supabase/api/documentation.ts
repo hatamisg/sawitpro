@@ -21,8 +21,21 @@ function convertFromDb(doc: Documentation) {
   };
 }
 
-// Convert app format to database format
-function convertToDb(doc: any): DocumentationInsert | DocumentationUpdate {
+// Convert app format to database format for insert
+function convertToDbInsert(doc: any): DocumentationInsert {
+  return {
+    garden_id: doc.gardenId,
+    tipe: doc.tipe,
+    judul: doc.judul,
+    deskripsi: doc.deskripsi || null,
+    file_url: doc.fileUrl || null,
+    content: doc.content || null,
+    kategori: doc.kategori || null,
+  };
+}
+
+// Convert app format to database format for update
+function convertToDbUpdate(doc: any): DocumentationUpdate {
   return {
     garden_id: doc.gardenId,
     tipe: doc.tipe,
@@ -39,7 +52,7 @@ function convertToDb(doc: any): DocumentationInsert | DocumentationUpdate {
  */
 export async function getDocumentationByGarden(gardenId: string) {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('documentation')
       .select('*')
       .eq('garden_id', gardenId)
@@ -64,7 +77,7 @@ export async function getDocumentationByGarden(gardenId: string) {
  */
 export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'dokumen' | 'catatan') {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('documentation')
       .select('*')
       .eq('garden_id', gardenId)
@@ -90,9 +103,9 @@ export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'd
  */
 export async function createDocumentation(doc: any) {
   try {
-    const docData = convertToDb(doc) as DocumentationInsert;
+    const docData = convertToDbInsert(doc);
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('documentation')
       .insert(docData)
       .select()
@@ -117,9 +130,9 @@ export async function createDocumentation(doc: any) {
  */
 export async function updateDocumentation(id: string, doc: any) {
   try {
-    const docData = convertToDb(doc) as DocumentationUpdate;
+    const docData = convertToDbUpdate(doc);
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('documentation')
       .update(docData)
       .eq('id', id)
@@ -145,7 +158,7 @@ export async function updateDocumentation(id: string, doc: any) {
  */
 export async function deleteDocumentation(id: string) {
   try {
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from('documentation')
       .delete()
       .eq('id', id);

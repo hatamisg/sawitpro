@@ -92,7 +92,7 @@ export async function createGarden(garden: any) {
   try {
     const gardenData = convertToDb(garden) as GardenInsert;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('gardens')
       .insert(gardenData)
       .select()
@@ -119,7 +119,7 @@ export async function updateGarden(id: string, garden: any) {
   try {
     const gardenData = convertToDb(garden) as GardenUpdate;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('gardens')
       .update(gardenData)
       .eq('id', id)
