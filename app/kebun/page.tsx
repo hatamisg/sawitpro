@@ -1,21 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { gardens as initialGardens } from "@/lib/data/mock-data";
+import { useGardens } from "@/lib/context/GardensContext";
 import { Garden } from "@/types";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import GardenCard from "@/components/kebun/GardenCard";
 import AddGardenModal from "@/components/kebun/AddGardenModal";
-import { toast } from "sonner";
+import EditGardenModal from "@/components/kebun/EditGardenModal";
 
 export default function KebunPage() {
-  const [gardens, setGardens] = useState<Garden[]>(initialGardens);
+  const { gardens, loading, createGarden, updateGarden, deleteGarden } = useGardens();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedGarden, setSelectedGarden] = useState<Garden | null>(null);
 
   // Filter gardens
   const filteredGardens = gardens.filter((garden) => {
@@ -25,21 +27,32 @@ export default function KebunPage() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleAddGarden = (newGarden: Omit<Garden, "id" | "createdAt" | "updatedAt">) => {
-    const garden: Garden = {
-      ...newGarden,
-      id: `garden-${Date.now()}`,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    setGardens([...gardens, garden]);
-    setIsAddModalOpen(false);
-    toast.success("Kebun berhasil ditambahkan!");
+  const handleAddGarden = async (newGarden: Omit<Garden, "id" | "createdAt" | "updatedAt">) => {
+    const success = await createGarden(newGarden);
+    if (success) {
+      setIsAddModalOpen(false);
+    }
   };
 
-  const handleDeleteGarden = (id: string) => {
-    setGardens(gardens.filter((g) => g.id !== id));
-    toast.success("Kebun berhasil dihapus!");
+  const handleEditGarden = async (updatedData: Omit<Garden, "id" | "createdAt" | "updatedAt">) => {
+    if (!selectedGarden) return;
+
+    const success = await updateGarden(selectedGarden.id, updatedData);
+    if (success) {
+      setIsEditModalOpen(false);
+      setSelectedGarden(null);
+    }
+  };
+
+  const handleDeleteGarden = async (id: string) => {
+    if (confirm("Apakah Anda yakin ingin menghapus kebun ini?")) {
+      await deleteGarden(id);
+    }
+  };
+
+  const openEditModal = (garden: Garden) => {
+    setSelectedGarden(garden);
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -116,8 +129,13 @@ export default function KebunPage() {
           </div>
         </div>
 
-        {/* Garden Grid */}
-        {filteredGardens.length === 0 ? (
+        {/* Loading State */}
+        {loading ? (
+          <div className="bg-white rounded-lg shadow-sm p-12 text-center">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+            <p className="mt-4 text-gray-500">Memuat data kebun...</p>
+          </div>
+        ) : filteredGardens.length === 0 ? (
           <div className="bg-white rounded-lg shadow-sm p-12 text-center">
             <p className="text-gray-500">Tidak ada kebun yang sesuai dengan filter</p>
           </div>
@@ -128,6 +146,7 @@ export default function KebunPage() {
                 key={garden.id}
                 garden={garden}
                 onDelete={() => handleDeleteGarden(garden.id)}
+                onEdit={() => openEditModal(garden)}
               />
             ))}
           </div>
@@ -139,6 +158,17 @@ export default function KebunPage() {
         open={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddGarden}
+      />
+
+      {/* Edit Garden Modal */}
+      <EditGardenModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedGarden(null);
+        }}
+        onSubmit={handleEditGarden}
+        garden={selectedGarden}
       />
     </div>
   );

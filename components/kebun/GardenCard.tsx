@@ -3,16 +3,17 @@ import { Garden } from "@/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Trees, Calendar, Trash2, Eye } from "lucide-react";
+import { MapPin, Trees, Calendar, Trash2, Eye, Pencil } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 
 interface GardenCardProps {
   garden: Garden;
   onDelete: () => void;
+  onEdit: () => void;
 }
 
-export default function GardenCard({ garden, onDelete }: GardenCardProps) {
+export default function GardenCard({ garden, onDelete, onEdit }: GardenCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Baik":
@@ -31,6 +32,11 @@ export default function GardenCard({ garden, onDelete }: GardenCardProps) {
     if (confirm(`Apakah Anda yakin ingin menghapus kebun "${garden.nama}"?`)) {
       onDelete();
     }
+  };
+
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onEdit();
   };
 
   return (
@@ -94,6 +100,9 @@ export default function GardenCard({ garden, onDelete }: GardenCardProps) {
               Lihat Detail
             </Button>
           </Link>
+          <Button variant="outline" size="sm" onClick={handleEdit}>
+            <Pencil className="h-4 w-4" />
+          </Button>
           <Button variant="destructive" size="sm" onClick={handleDelete}>
             <Trash2 className="h-4 w-4" />
           </Button>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/layout/Navbar";
+import { Providers } from "@/lib/providers";
 
 export const metadata: Metadata = {
   title: "PalmTrack - Garden Planner & Management",
@@ -16,13 +17,15 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className="font-sans antialiased">
-        <div className="min-h-screen flex flex-col">
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-        </div>
-        <Toaster />
+        <Providers>
+          <div className="min-h-screen flex flex-col">
+            <Navbar />
+            <main className="flex-1">
+              {children}
+            </main>
+          </div>
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
