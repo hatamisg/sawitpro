@@ -1,4 +1,4 @@
-import { Garden, Task, Harvest, Issue, Maintenance, Documentation } from '@/types';
+import { Garden, Task, Harvest, Issue, Maintenance, Documentation, Expense } from '@/types';
 import { subDays, subMonths, addDays, addWeeks } from 'date-fns';
 
 // Helper function to generate IDs
@@ -942,4 +942,47 @@ export const documentation: Documentation[] = [
     createdAt: subDays(new Date(), 8),
     updatedAt: subDays(new Date(), 8),
   },
+];
+
+// EXPENSES DATA
+export const expenses: Expense[] = [
+  // Garden 1 - Kebun Sawit Makmur
+  { id: 'exp-1', gardenId: 'garden-1', tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pembelian pupuk NPK 15-15-15 sebanyak 5 ton', jumlah: 12500000, catatan: 'Untuk pemupukan rutin blok A-C', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
+  { id: 'exp-2', gardenId: 'garden-1', tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja pemanen bulan Juli', jumlah: 8500000, catatan: '10 orang pemanen', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-3', gardenId: 'garden-1', tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida untuk pengendalian hama ulat', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-4', gardenId: 'garden-1', tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian egrek dan dodos baru', jumlah: 4500000, catatan: 'Untuk mengganti peralatan yang rusak', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-5', gardenId: 'garden-1', tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya angkut TBS ke pabrik', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-6', gardenId: 'garden-1', tanggal: subDays(new Date(), 15), kategori: 'Pupuk', deskripsi: 'Pupuk Urea 2 ton', jumlah: 5600000, catatan: '', createdAt: subDays(new Date(), 15), updatedAt: subDays(new Date(), 15) },
+
+  // Garden 2 - Kebun Sawit Sejahtera
+  { id: 'exp-7', gardenId: 'garden-2', tanggal: subMonths(new Date(), 4), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 3 ton', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-8', gardenId: 'garden-2', tanggal: subMonths(new Date(), 3), kategori: 'Tenaga Kerja', deskripsi: 'Upah tenaga kerja pemangkasan', jumlah: 3500000, catatan: '5 orang selama 2 minggu', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-9', gardenId: 'garden-2', tanggal: subMonths(new Date(), 2), kategori: 'Lainnya', deskripsi: 'Perbaikan jalan akses', jumlah: 6000000, catatan: 'Perbaikan jalan utama', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-10', gardenId: 'garden-2', tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Herbisida untuk pengendalian gulma', jumlah: 2200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+
+  // Garden 3 - Kebun Sawit Jaya
+  { id: 'exp-11', gardenId: 'garden-3', tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan KCl untuk 32 hektar', jumlah: 15000000, catatan: '', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
+  { id: 'exp-12', gardenId: 'garden-3', tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji bulanan 15 tenaga kerja', jumlah: 12000000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-13', gardenId: 'garden-3', tanggal: subMonths(new Date(), 3), kategori: 'Peralatan', deskripsi: 'Mesin pemotong pelepah baru', jumlah: 8500000, catatan: 'Investasi peralatan baru', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-14', gardenId: 'garden-3', tanggal: subMonths(new Date(), 2), kategori: 'Transportasi', deskripsi: 'Biaya transportasi TBS 2 bulan', jumlah: 4500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-15', gardenId: 'garden-3', tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perawatan sumur bor irigasi', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+
+  // Garden 4 - Kebun Sawit Mandiri
+  { id: 'exp-16', gardenId: 'garden-4', tanggal: subMonths(new Date(), 3), kategori: 'Pupuk', deskripsi: 'Pupuk organik 4 ton', jumlah: 6500000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-17', gardenId: 'garden-4', tanggal: subMonths(new Date(), 2), kategori: 'Tenaga Kerja', deskripsi: 'Upah pemanen dan perawatan', jumlah: 5500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-18', gardenId: 'garden-4', tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Fungisida untuk pencegahan penyakit', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+
+  // Garden 5 - Kebun Sawit Berkah
+  { id: 'exp-19', gardenId: 'garden-5', tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida darurat untuk ulat api', jumlah: 5500000, catatan: 'Penanganan serangan parah', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-20', gardenId: 'garden-5', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 4 ton', jumlah: 10000000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-21', gardenId: 'garden-5', tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja tambahan', jumlah: 6500000, catatan: 'Untuk penanggulangan hama', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+
+  // Garden 6, 7, 8 - various records
+  { id: 'exp-22', gardenId: 'garden-6', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan dolomit', jumlah: 8500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-23', gardenId: 'garden-6', tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perbaikan sistem irigasi', jumlah: 4800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-24', gardenId: 'garden-7', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk lengkap untuk kebun baru', jumlah: 9200000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-25', gardenId: 'garden-7', tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja bulanan', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-26', gardenId: 'garden-8', tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian alat panen modern', jumlah: 12000000, catatan: 'Investasi untuk efisiensi', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-27', gardenId: 'garden-8', tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya transportasi dan logistik', jumlah: 3500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-28', gardenId: 'garden-1', tanggal: subDays(new Date(), 5), kategori: 'Lainnya', deskripsi: 'Biaya administrasi dan perizinan', jumlah: 1500000, catatan: '', createdAt: subDays(new Date(), 5), updatedAt: subDays(new Date(), 5) },
 ];

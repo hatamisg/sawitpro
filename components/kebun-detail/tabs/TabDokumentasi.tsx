@@ -1,21 +1,116 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Documentation } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Image as ImageIcon, FileText, StickyNote } from "lucide-react";
+import { Plus, Image as ImageIcon, FileText, StickyNote, Edit, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Image from "next/image";
+import { toast } from "sonner";
+import AddDocumentationModal from "../modals/AddDocumentationModal";
+import EditDocumentationModal from "../modals/EditDocumentationModal";
+import {
+  createDocumentation,
+  updateDocumentation,
+  deleteDocumentation,
+  getDocumentationByGarden
+} from "@/lib/supabase/api/documentation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface TabDokumentasiProps {
   gardenId: string;
   documentation: Documentation[];
 }
 
-export default function TabDokumentasi({ gardenId, documentation }: TabDokumentasiProps) {
+export default function TabDokumentasi({ gardenId, documentation: initialDocumentation }: TabDokumentasiProps) {
+  const [documentation, setDocumentation] = useState<Documentation[]>(initialDocumentation);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState<Documentation | null>(null);
+  const [docToDelete, setDocToDelete] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch documentation from Supabase on mount
+  useEffect(() => {
+    fetchDocumentation();
+  }, [gardenId]);
+
+  const fetchDocumentation = async () => {
+    setIsLoading(true);
+    const { data, error } = await getDocumentationByGarden(gardenId);
+    if (data) {
+      setDocumentation(data);
+    } else if (error) {
+      toast.error("Gagal memuat dokumentasi: " + error);
+      setDocumentation(initialDocumentation);
+    }
+    setIsLoading(false);
+  };
+
+  const handleAddDoc = async (docData: any) => {
+    const { data, error } = await createDocumentation({
+      ...docData,
+      gardenId,
+    });
+
+    if (data) {
+      setDocumentation((prev) => [...prev, data]);
+      setIsAddModalOpen(false);
+      toast.success("Dokumentasi berhasil ditambahkan!");
+    } else if (error) {
+      toast.error("Gagal menambahkan dokumentasi: " + error);
+    }
+  };
+
+  const handleEditDoc = async (docData: any) => {
+    if (!selectedDoc) return;
+
+    const { data, error } = await updateDocumentation(selectedDoc.id, {
+      ...docData,
+      gardenId,
+    });
+
+    if (data) {
+      setDocumentation((prev) => prev.map((d) => (d.id === selectedDoc.id ? data : d)));
+      setIsEditModalOpen(false);
+      setSelectedDoc(null);
+      toast.success("Dokumentasi berhasil diperbarui!");
+    } else if (error) {
+      toast.error("Gagal memperbarui dokumentasi: " + error);
+    }
+  };
+
+  const handleDeleteDoc = async () => {
+    if (!docToDelete) return;
+
+    const { success, error } = await deleteDocumentation(docToDelete);
+
+    if (success) {
+      setDocumentation((prev) => prev.filter((d) => d.id !== docToDelete));
+      setDocToDelete(null);
+      toast.success("Dokumentasi berhasil dihapus!");
+    } else if (error) {
+      toast.error("Gagal menghapus dokumentasi: " + error);
+    }
+  };
+
+  const openEditModal = (doc: Documentation) => {
+    setSelectedDoc(doc);
+    setIsEditModalOpen(true);
+  };
+
   const photos = documentation.filter((d) => d.tipe === "foto");
   const documents = documentation.filter((d) => d.tipe === "dokumen");
   const notes = documentation.filter((d) => d.tipe === "catatan");
@@ -27,7 +122,7 @@ export default function TabDokumentasi({ gardenId, documentation }: TabDokumenta
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <CardTitle>Dokumentasi Kebun</CardTitle>
-            <Button>
+            <Button onClick={() => setIsAddModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Tambah Dokumentasi
             </Button>
@@ -81,6 +176,24 @@ export default function TabDokumentasi({ gardenId, documentation }: TabDokumenta
                             className="object-cover group-hover:scale-110 transition-transform duration-200"
                           />
                         )}
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            onClick={() => openEditModal(photo)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => setDocToDelete(photo.id)}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
                       <div className="mt-2">
                         <h4 className="text-sm font-medium text-gray-900 truncate">
@@ -130,9 +243,24 @@ export default function TabDokumentasi({ gardenId, documentation }: TabDokumenta
                           </span>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm">
-                        Lihat
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => openEditModal(doc)}
+                          className="h-8 w-8 p-0"
+                        >
+                          <Edit className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setDocToDelete(doc.id)}
+                          className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -150,10 +278,27 @@ export default function TabDokumentasi({ gardenId, documentation }: TabDokumenta
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {notes.map((note) => (
-                    <div key={note.id} className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div key={note.id} className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg group">
                       <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{note.judul}</h4>
-                        <StickyNote className="h-4 w-4 text-yellow-600 flex-shrink-0" />
+                        <h4 className="font-medium text-gray-900 flex-1">{note.judul}</h4>
+                        <div className="flex gap-1">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => openEditModal(note)}
+                            className="h-7 w-7 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Edit className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => setDocToDelete(note.id)}
+                            className="h-7 w-7 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
                       </div>
                       {note.content && (
                         <p className="text-sm text-gray-700 mb-2 line-clamp-4">{note.content}</p>
@@ -172,6 +317,41 @@ export default function TabDokumentasi({ gardenId, documentation }: TabDokumenta
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Modals */}
+      <AddDocumentationModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddDoc}
+      />
+
+      <EditDocumentationModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedDoc(null);
+        }}
+        onSubmit={handleEditDoc}
+        documentation={selectedDoc}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!docToDelete} onOpenChange={() => setDocToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus dokumentasi ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteDoc} className="bg-red-600 hover:bg-red-700">
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -78,7 +78,7 @@ export async function createIssue(issue: any) {
   try {
     const issueData = convertToDb(issue) as IssueInsert;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('issues')
       .insert(issueData)
       .select()
@@ -105,7 +105,7 @@ export async function updateIssue(id: string, issue: any) {
   try {
     const issueData = convertToDb(issue) as IssueUpdate;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('issues')
       .update(issueData)
       .eq('id', id)
@@ -139,7 +139,7 @@ export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved')
       updateData.tanggal_selesai = null;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('issues')
       .update(updateData)
       .eq('id', id)

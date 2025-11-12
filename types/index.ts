@@ -84,3 +84,15 @@ export interface Documentation {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface Expense {
+  id: string;
+  gardenId: string;
+  tanggal: Date;
+  kategori: 'Pupuk' | 'Pestisida' | 'Peralatan' | 'Tenaga Kerja' | 'Transportasi' | 'Lainnya';
+  deskripsi: string;
+  jumlah: number; // amount in IDR
+  catatan?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

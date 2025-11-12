@@ -1,14 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Maintenance } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, Calendar, CheckCircle2 } from "lucide-react";
+import { Plus, Calendar, CheckCircle2, Edit, Trash2 } from "lucide-react";
 import { format, isPast, isFuture } from "date-fns";
 import { id } from "date-fns/locale";
 import { toast } from "sonner";
+import AddMaintenanceModal from "../modals/AddMaintenanceModal";
+import EditMaintenanceModal from "../modals/EditMaintenanceModal";
+import { createMaintenance, updateMaintenance, updateMaintenanceStatus, deleteMaintenance, getMaintenancesByGarden } from "@/lib/supabase/api/maintenances";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface TabPerawatanProps {
   gardenId: string;
@@ -17,6 +30,29 @@ interface TabPerawatanProps {
 
 export default function TabPerawatan({ gardenId, maintenances: initialMaintenances }: TabPerawatanProps) {
   const [maintenances, setMaintenances] = useState<Maintenance[]>(initialMaintenances);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedMaintenance, setSelectedMaintenance] = useState<Maintenance | null>(null);
+  const [maintenanceToDelete, setMaintenanceToDelete] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch maintenances from Supabase on mount
+  useEffect(() => {
+    fetchMaintenances();
+  }, [gardenId]);
+
+  const fetchMaintenances = async () => {
+    setIsLoading(true);
+    const { data, error } = await getMaintenancesByGarden(gardenId);
+    if (data) {
+      setMaintenances(data);
+    } else if (error) {
+      toast.error("Gagal memuat perawatan: " + error);
+      // Fallback to initial maintenances
+      setMaintenances(initialMaintenances);
+    }
+    setIsLoading(false);
+  };
 
   const sortedMaintenances = [...maintenances].sort(
     (a, b) => new Date(a.tanggalDijadwalkan).getTime() - new Date(b.tanggalDijadwalkan).getTime()
@@ -39,20 +75,67 @@ export default function TabPerawatan({ gardenId, maintenances: initialMaintenanc
     }
   };
 
-  const handleMarkDone = (maintenanceId: string) => {
-    setMaintenances((prev) =>
-      prev.map((m) =>
-        m.id === maintenanceId
-          ? {
-              ...m,
-              status: "Selesai",
-              tanggalSelesai: new Date(),
-              updatedAt: new Date(),
-            }
-          : m
-      )
-    );
-    toast.success("Perawatan ditandai selesai!");
+  const handleAddMaintenance = async (maintenanceData: any) => {
+    const { data, error } = await createMaintenance({
+      ...maintenanceData,
+      gardenId,
+    });
+
+    if (data) {
+      setMaintenances((prev) => [...prev, data]);
+      setIsAddModalOpen(false);
+      toast.success("Jadwal perawatan berhasil ditambahkan!");
+    } else if (error) {
+      toast.error("Gagal menambahkan perawatan: " + error);
+    }
+  };
+
+  const handleEditMaintenance = async (maintenanceData: any) => {
+    if (!selectedMaintenance) return;
+
+    const { data, error } = await updateMaintenance(selectedMaintenance.id, {
+      ...maintenanceData,
+      gardenId,
+    });
+
+    if (data) {
+      setMaintenances((prev) => prev.map((m) => (m.id === selectedMaintenance.id ? data : m)));
+      setIsEditModalOpen(false);
+      setSelectedMaintenance(null);
+      toast.success("Perawatan berhasil diperbarui!");
+    } else if (error) {
+      toast.error("Gagal memperbarui perawatan: " + error);
+    }
+  };
+
+  const handleMarkDone = async (maintenanceId: string) => {
+    const { data, error } = await updateMaintenanceStatus(maintenanceId, "Selesai");
+
+    if (data) {
+      setMaintenances((prev) => prev.map((m) => (m.id === maintenanceId ? data : m)));
+      toast.success("Perawatan ditandai selesai!");
+    } else if (error) {
+      toast.error("Gagal mengubah status: " + error);
+    }
+  };
+
+  const handleDeleteMaintenance = async () => {
+    if (!maintenanceToDelete) return;
+
+    const { success, error } = await deleteMaintenance(maintenanceToDelete);
+
+    if (success) {
+      setMaintenances((prev) => prev.filter((m) => m.id !== maintenanceToDelete));
+      setMaintenanceToDelete(null);
+      toast.success("Perawatan berhasil dihapus!");
+    } else if (error) {
+      toast.error("Gagal menghapus perawatan: " + error);
+    }
+  };
+
+  const openEditModal = (maintenance: Maintenance) => {
+    setSelectedMaintenance(maintenance);
+    setIsEditModalOpen(true);
   };
 
   return (
@@ -65,7 +148,7 @@ export default function TabPerawatan({ gardenId, maintenances: initialMaintenanc
               <Calendar className="h-5 w-5 text-primary" />
               Jadwal Perawatan
             </CardTitle>
-            <Button>
+            <Button onClick={() => setIsAddModalOpen(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Jadwalkan Perawatan
             </Button>
@@ -148,16 +231,34 @@ export default function TabPerawatan({ gardenId, maintenances: initialMaintenanc
                         )}
                       </div>
                     </div>
-                    {maintenance.status === "Dijadwalkan" && (
+                    <div className="flex items-center gap-2">
+                      {maintenance.status === "Dijadwalkan" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleMarkDone(maintenance.id)}
+                        >
+                          <CheckCircle2 className="h-4 w-4 mr-1" />
+                          Selesai
+                        </Button>
+                      )}
                       <Button
                         size="sm"
-                        variant="outline"
-                        onClick={() => handleMarkDone(maintenance.id)}
+                        variant="ghost"
+                        onClick={() => openEditModal(maintenance)}
+                        className="h-8 w-8 p-0"
                       >
-                        <CheckCircle2 className="h-4 w-4 mr-1" />
-                        Selesai
+                        <Edit className="h-3.5 w-3.5" />
                       </Button>
-                    )}
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setMaintenanceToDelete(maintenance.id)}
+                        className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
                   </div>
 
                   {maintenance.detail && (
@@ -187,6 +288,41 @@ export default function TabPerawatan({ gardenId, maintenances: initialMaintenanc
           </div>
         </CardContent>
       </Card>
+
+      {/* Modals */}
+      <AddMaintenanceModal
+        open={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSubmit={handleAddMaintenance}
+      />
+
+      <EditMaintenanceModal
+        open={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedMaintenance(null);
+        }}
+        onSubmit={handleEditMaintenance}
+        maintenance={selectedMaintenance}
+      />
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={!!maintenanceToDelete} onOpenChange={() => setMaintenanceToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
+            <AlertDialogDescription>
+              Apakah Anda yakin ingin menghapus jadwal perawatan ini? Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteMaintenance} className="bg-red-600 hover:bg-red-700">
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

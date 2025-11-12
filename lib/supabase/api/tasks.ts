@@ -70,7 +70,7 @@ export async function createTask(task: any) {
   try {
     const taskData = convertToDb(task) as TaskInsert;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('tasks')
       .insert(taskData)
       .select()
@@ -97,7 +97,7 @@ export async function updateTask(id: string, task: any) {
   try {
     const taskData = convertToDb(task) as TaskUpdate;
 
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('tasks')
       .update(taskData)
       .eq('id', id)
@@ -123,7 +123,7 @@ export async function updateTask(id: string, task: any) {
  */
 export async function updateTaskStatus(id: string, status: 'To Do' | 'In Progress' | 'Done') {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('tasks')
       .update({ status })
       .eq('id', id)
