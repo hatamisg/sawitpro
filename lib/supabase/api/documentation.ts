@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Documentation = Database['public']['Tables']['documentation']['Row'];
 type DocumentationInsert = Database['public']['Tables']['documentation']['Insert'];
@@ -52,6 +53,8 @@ function convertToDbUpdate(doc: any): DocumentationUpdate {
  */
 export async function getDocumentationByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await (supabase as any)
       .from('documentation')
       .select('*')
@@ -77,6 +80,8 @@ export async function getDocumentationByGarden(gardenId: string) {
  */
 export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'dokumen' | 'catatan') {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await (supabase as any)
       .from('documentation')
       .select('*')
@@ -103,6 +108,8 @@ export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'd
  */
 export async function createDocumentation(doc: any) {
   try {
+    validateUUID(doc.gardenId, 'Garden ID');
+
     const docData = convertToDbInsert(doc);
 
     const { data, error } = await (supabase as any)
@@ -130,6 +137,8 @@ export async function createDocumentation(doc: any) {
  */
 export async function updateDocumentation(id: string, doc: any) {
   try {
+    validateUUID(id, 'Documentation ID');
+
     const docData = convertToDbUpdate(doc);
 
     const { data, error } = await (supabase as any)
@@ -158,6 +167,8 @@ export async function updateDocumentation(id: string, doc: any) {
  */
 export async function deleteDocumentation(id: string) {
   try {
+    validateUUID(id, 'Documentation ID');
+
     const { error } = await (supabase as any)
       .from('documentation')
       .delete()

@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Harvest = Database['public']['Tables']['harvests']['Row'];
 type HarvestInsert = Database['public']['Tables']['harvests']['Insert'];
@@ -38,6 +39,8 @@ function convertToDb(harvest: any): HarvestInsert {
  */
 export async function getHarvestsByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await supabase
       .from('harvests')
       .select('*')
@@ -63,6 +66,8 @@ export async function getHarvestsByGarden(gardenId: string) {
  */
 export async function createHarvest(harvest: any) {
   try {
+    validateUUID(harvest.gardenId, 'Garden ID');
+
     const harvestData = convertToDb(harvest);
 
     const { data, error } = await (supabase as any)
@@ -90,6 +95,8 @@ export async function createHarvest(harvest: any) {
  */
 export async function updateHarvest(id: string, harvest: any) {
   try {
+    validateUUID(id, 'Harvest ID');
+
     const harvestData = convertToDb(harvest);
 
     const { data, error } = await (supabase as any)
@@ -118,6 +125,8 @@ export async function updateHarvest(id: string, harvest: any) {
  */
 export async function deleteHarvest(id: string) {
   try {
+    validateUUID(id, 'Harvest ID');
+
     const { error } = await supabase
       .from('harvests')
       .delete()

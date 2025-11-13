@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Garden = Database['public']['Tables']['gardens']['Row'];
 type GardenInsert = Database['public']['Tables']['gardens']['Insert'];
@@ -65,6 +66,8 @@ export async function getAllGardens() {
  */
 export async function getGardenById(id: string) {
   try {
+    validateUUID(id, 'Garden ID');
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
@@ -117,6 +120,8 @@ export async function createGarden(garden: any) {
  */
 export async function updateGarden(id: string, garden: any) {
   try {
+    validateUUID(id, 'Garden ID');
+
     const gardenData = convertToDb(garden) as GardenUpdate;
 
     const { data, error } = await (supabase as any)
@@ -145,6 +150,8 @@ export async function updateGarden(id: string, garden: any) {
  */
 export async function deleteGarden(id: string) {
   try {
+    validateUUID(id, 'Garden ID');
+
     const { error } = await supabase
       .from('gardens')
       .delete()

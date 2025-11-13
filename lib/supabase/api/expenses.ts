@@ -1,4 +1,5 @@
 import { supabase, handleSupabaseError } from '../client';
+import { validateUUID } from '@/lib/utils';
 
 // Note: expenses table types not yet generated in Database types
 // Using any types temporarily until Supabase types are regenerated
@@ -37,6 +38,8 @@ function convertToDb(expense: any): any {
  */
 export async function getExpensesByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await (supabase as any)
       .from('expenses')
       .select('*')
@@ -62,6 +65,8 @@ export async function getExpensesByGarden(gardenId: string) {
  */
 export async function createExpense(expense: any) {
   try {
+    validateUUID(expense.gardenId, 'Garden ID');
+
     const expenseData = convertToDb(expense);
 
     const { data, error } = await (supabase as any)
@@ -89,6 +94,8 @@ export async function createExpense(expense: any) {
  */
 export async function updateExpense(id: string, expense: any) {
   try {
+    validateUUID(id, 'Expense ID');
+
     const expenseData = convertToDb(expense);
 
     const { data, error } = await (supabase as any)
@@ -117,6 +124,8 @@ export async function updateExpense(id: string, expense: any) {
  */
 export async function deleteExpense(id: string) {
   try {
+    validateUUID(id, 'Expense ID');
+
     const { error } = await (supabase as any)
       .from('expenses')
       .delete()

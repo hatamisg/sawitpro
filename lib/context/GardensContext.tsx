@@ -5,6 +5,7 @@ import { Garden } from '@/types';
 import * as gardensApi from '@/lib/supabase/api/gardens';
 import { gardens as mockGardens } from '@/lib/data/mock-data';
 import { toast } from 'sonner';
+import { generateUUID } from '@/lib/utils';
 
 interface GardensContextType {
   gardens: Garden[];
@@ -94,7 +95,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
         // Create in local state (mock)
         const newGarden: Garden = {
           ...gardenData,
-          id: `garden-${Date.now()}`,
+          id: generateUUID(),
           createdAt: new Date(),
           updatedAt: new Date(),
         };

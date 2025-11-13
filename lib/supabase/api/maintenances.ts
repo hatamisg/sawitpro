@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Maintenance = Database['public']['Tables']['maintenances']['Row'];
 type MaintenanceInsert = Database['public']['Tables']['maintenances']['Insert'];
@@ -51,6 +52,8 @@ function convertToDb(maintenance: any): MaintenanceInsert | MaintenanceUpdate {
  */
 export async function getMaintenancesByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await supabase
       .from('maintenances')
       .select('*')
@@ -76,6 +79,8 @@ export async function getMaintenancesByGarden(gardenId: string) {
  */
 export async function createMaintenance(maintenance: any) {
   try {
+    validateUUID(maintenance.gardenId, 'Garden ID');
+
     const maintenanceData = convertToDb(maintenance) as MaintenanceInsert;
 
     const { data, error } = await (supabase as any)
@@ -103,6 +108,8 @@ export async function createMaintenance(maintenance: any) {
  */
 export async function updateMaintenance(id: string, maintenance: any) {
   try {
+    validateUUID(id, 'Maintenance ID');
+
     const maintenanceData = convertToDb(maintenance) as MaintenanceUpdate;
 
     const { data, error } = await (supabase as any)
@@ -131,6 +138,8 @@ export async function updateMaintenance(id: string, maintenance: any) {
  */
 export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' | 'Selesai' | 'Terlambat') {
   try {
+    validateUUID(id, 'Maintenance ID');
+
     const updateData: any = { status };
 
     if (status === 'Selesai') {
@@ -163,6 +172,8 @@ export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' 
  */
 export async function deleteMaintenance(id: string) {
   try {
+    validateUUID(id, 'Maintenance ID');
+
     const { error } = await supabase
       .from('maintenances')
       .delete()
