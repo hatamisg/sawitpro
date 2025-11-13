@@ -29,8 +29,10 @@ export default function DetailKebunPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [currentGarden, setCurrentGarden] = useState<any>(null);
 
-  // Find garden - prioritize context gardens, fallback to mock data
-  const garden = contextGardens.find((g) => g.id === id) || gardens.find((g) => g.id === id);
+  // Find garden by slug or ID - prioritize context gardens, fallback to mock data
+  // Support both slug and UUID for backward compatibility
+  const garden = contextGardens.find((g) => g.slug === id || g.id === id) ||
+                 gardens.find((g) => g.slug === id || g.id === id);
   if (!garden) {
     notFound();
   }

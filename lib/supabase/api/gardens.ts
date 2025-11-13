@@ -1,6 +1,6 @@
 import { supabase, handleSupabaseError, isSupabaseConfigured } from '../client';
 import { Database } from '../types';
-import { validateUUID } from '@/lib/utils';
+import { validateUUID, identifyIdType } from '@/lib/utils';
 
 type Garden = Database['public']['Tables']['gardens']['Row'];
 type GardenInsert = Database['public']['Tables']['gardens']['Insert'];
@@ -11,6 +11,7 @@ function convertFromDb(garden: Garden) {
   return {
     id: garden.id,
     nama: garden.nama,
+    slug: garden.slug || '',
     lokasi: garden.lokasi,
     lokasiLengkap: garden.lokasi_lengkap,
     luas: Number(garden.luas),
@@ -27,6 +28,7 @@ function convertFromDb(garden: Garden) {
 function convertToDb(garden: any): GardenInsert | GardenUpdate {
   return {
     nama: garden.nama,
+    slug: garden.slug,
     lokasi: garden.lokasi,
     lokasi_lengkap: garden.lokasiLengkap,
     luas: garden.luas,
@@ -66,21 +68,27 @@ export async function getAllGardens() {
 }
 
 /**
- * Fetch a single garden by ID
+ * Fetch a single garden by ID or slug
+ * Supports both UUID and slug formats
  */
-export async function getGardenById(id: string) {
+export async function getGardenById(idOrSlug: string) {
   try {
     if (!supabase) {
       throw new Error('Supabase is not configured');
     }
 
-    validateUUID(id, 'Garden ID');
+    const idType = identifyIdType(idOrSlug);
+    let query = supabase.from('gardens').select('*');
 
-    const { data, error } = await supabase
-      .from('gardens')
-      .select('*')
-      .eq('id', id)
-      .single();
+    if (idType === 'uuid') {
+      // Search by UUID
+      query = query.eq('id', idOrSlug);
+    } else {
+      // Search by slug (default for anything that's not a UUID)
+      query = query.eq('slug', idOrSlug);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) throw error;
 
@@ -94,6 +102,13 @@ export async function getGardenById(id: string) {
       error: handleSupabaseError(error),
     };
   }
+}
+
+/**
+ * Fetch a single garden by slug (alias for getGardenById)
+ */
+export async function getGardenBySlug(slug: string) {
+  return getGardenById(slug);
 }
 
 /**

@@ -94,7 +94,7 @@ export default function GardenCard({ garden, onDelete, onEdit }: GardenCardProps
 
         {/* Actions */}
         <div className="flex gap-2">
-          <Link href={`/kebun/${garden.id}`} className="flex-1">
+          <Link href={`/kebun/${garden.slug}`} className="flex-1">
             <Button className="w-full" variant="default" size="sm">
               <Eye className="h-4 w-4 mr-2" />
               Lihat Detail

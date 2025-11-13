@@ -44,7 +44,7 @@ export default function GardenQuickAccess({ gardens }: GardenQuickAccessProps) {
           {gardens.map((garden) => (
             <Link
               key={garden.id}
-              href={`/kebun/${garden.id}`}
+              href={`/kebun/${garden.slug}`}
               className="block p-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
             >
               <div className="flex items-start justify-between mb-3">

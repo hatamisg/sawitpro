@@ -5,17 +5,18 @@ import { Garden } from '@/types';
 import * as gardensApi from '@/lib/supabase/api/gardens';
 import { gardens as mockGardens } from '@/lib/data/mock-data';
 import { toast } from 'sonner';
-import { generateUUID } from '@/lib/utils';
+import { generateUUID, generateSlug } from '@/lib/utils';
 
 interface GardensContextType {
   gardens: Garden[];
   loading: boolean;
   error: string | null;
   refreshGardens: () => Promise<void>;
-  createGarden: (garden: Omit<Garden, 'id' | 'createdAt' | 'updatedAt'>) => Promise<boolean>;
-  updateGarden: (id: string, garden: Omit<Garden, 'id' | 'createdAt' | 'updatedAt'>) => Promise<boolean>;
+  createGarden: (garden: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>) => Promise<boolean>;
+  updateGarden: (id: string, garden: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>) => Promise<boolean>;
   deleteGarden: (id: string) => Promise<boolean>;
   getGardenById: (id: string) => Garden | undefined;
+  getGardenBySlug: (slug: string) => Garden | undefined;
 }
 
 const GardensContext = createContext<GardensContextType | undefined>(undefined);
@@ -74,12 +75,18 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     }
   };
 
-  const createGarden = async (gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
+  const createGarden = async (gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>): Promise<boolean> => {
+    // Generate slug from nama
+    const gardenDataWithSlug = {
+      ...gardenData,
+      slug: generateSlug(gardenData.nama),
+    };
+
     try {
       if (shouldUseSupabase) {
         // Create in Supabase
         console.log('📡 Creating garden in Supabase...');
-        const { data, error } = await gardensApi.createGarden(gardenData);
+        const { data, error } = await gardensApi.createGarden(gardenDataWithSlug);
 
         if (error) {
           throw new Error(error);
@@ -95,7 +102,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
         // Create in local state (mock)
         console.log('📋 Creating garden in mock data (not persisted)');
         const newGarden: Garden = {
-          ...gardenData,
+          ...gardenDataWithSlug,
           id: generateUUID(),
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -114,12 +121,18 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     }
   };
 
-  const updateGarden = async (id: string, gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt'>): Promise<boolean> => {
+  const updateGarden = async (id: string, gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>): Promise<boolean> => {
+    // Generate new slug if nama changed
+    const gardenDataWithSlug = {
+      ...gardenData,
+      slug: generateSlug(gardenData.nama),
+    };
+
     try {
       if (shouldUseSupabase) {
         // Update in Supabase
         console.log('📡 Updating garden in Supabase:', id);
-        const { data, error } = await gardensApi.updateGarden(id, gardenData);
+        const { data, error } = await gardensApi.updateGarden(id, gardenDataWithSlug);
 
         if (error) {
           throw new Error(error);
@@ -136,7 +149,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
         console.log('📋 Updating garden in mock data (not persisted):', id);
         setGardens(prev => prev.map(g =>
           g.id === id
-            ? { ...g, ...gardenData, updatedAt: new Date() }
+            ? { ...g, ...gardenDataWithSlug, updatedAt: new Date() }
             : g
         ));
         toast.success('Kebun berhasil diperbarui! (Mock data - tidak tersimpan di database)');
@@ -190,6 +203,10 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     return gardens.find(g => g.id === id);
   };
 
+  const getGardenBySlug = (slug: string): Garden | undefined => {
+    return gardens.find(g => g.slug === slug);
+  };
+
   const value: GardensContextType = {
     gardens,
     loading,
@@ -199,6 +216,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     updateGarden,
     deleteGarden,
     getGardenById,
+    getGardenBySlug,
   };
 
   return (
