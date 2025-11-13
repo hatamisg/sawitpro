@@ -4,6 +4,8 @@ Aplikasi web manajemen kebun kelapa sawit dengan fitur task management, harvest 
 
 ## 🚀 Quick Start
 
+### Opsi 1: Dengan Mock Data (Tanpa Database)
+
 ```bash
 # Install dependencies
 npm install
@@ -16,6 +18,31 @@ npm run dev
 ```
 
 Aplikasi akan langsung berjalan dengan mock data untuk 8 kebun sawit! 🌴
+
+### Opsi 2: Dengan Supabase Database (Recommended)
+
+Untuk menggunakan database real di cloud dengan Supabase:
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Setup Supabase (ikuti panduan lengkap)
+# Baca file SETUP_SUPABASE.md untuk tutorial lengkap
+
+# 3. Copy .env.local.example ke .env.local
+cp .env.local.example .env.local
+
+# 4. Isi .env.local dengan Supabase credentials Anda
+
+# 5. Seed database dengan data mock
+npm run seed
+
+# 6. Run development server
+npm run dev
+```
+
+**📖 [Lihat Tutorial Setup Supabase Lengkap](./SETUP_SUPABASE.md)**
 
 ## ✨ Status Implementasi
 
@@ -137,11 +164,11 @@ Aplikasi akan langsung berjalan dengan mock data untuk 8 kebun sawit! 🌴
 
 ```
 sawitpro/
-├── app/
+├── app/                    # Next.js App Router
 │   ├── layout.tsx          # Root layout dengan Navbar
 │   ├── page.tsx            # Dashboard (✅ Completed)
 │   ├── globals.css         # Global styles dengan Tailwind
-│   └── kebun/              # Kebun routes (🚧 TODO)
+│   └── kebun/              # Kebun routes (✅ Completed)
 │       ├── page.tsx        # List kebun
 │       └── [id]/           # Detail kebun
 │           └── page.tsx    # Detail dengan tabs
@@ -150,15 +177,26 @@ sawitpro/
 │   ├── layout/
 │   │   └── Navbar.tsx      # Main navigation (✅ Completed)
 │   ├── dashboard/          # Dashboard components (✅ Completed)
-│   ├── kebun/              # Kebun components (🚧 TODO)
-│   └── kebun-detail/       # Detail kebun components (🚧 TODO)
-│       └── tabs/           # Tab components (🚧 TODO)
+│   ├── kebun/              # Kebun components (✅ Completed)
+│   └── kebun-detail/       # Detail kebun components (✅ Completed)
+│       └── tabs/           # Tab components (✅ Completed)
 ├── lib/
 │   ├── data/
 │   │   └── mock-data.ts    # Mock data lengkap (✅ Completed)
+│   ├── supabase/           # Supabase integration
+│   │   ├── client.ts       # Supabase client
+│   │   ├── types.ts        # Database types
+│   │   └── api/            # API functions untuk CRUD
 │   └── utils.ts            # Utility functions (✅ Completed)
+├── supabase/               # Database schema & migrations
+│   ├── schema.sql          # Complete database schema
+│   └── migrations/         # Migration files
+├── scripts/
+│   └── seed-supabase.ts    # Database seeding script
 ├── types/
 │   └── index.ts            # TypeScript interfaces (✅ Completed)
+├── .env.local.example      # Environment variables template
+├── SETUP_SUPABASE.md       # 📖 Tutorial setup Supabase
 ├── package.json
 ├── tsconfig.json
 ├── tailwind.config.ts
@@ -326,12 +364,31 @@ toast.error("Terjadi kesalahan!");
 9. **Toast notifications** untuk semua user actions
 10. **Responsive testing** dan optimization
 
+## 🗄️ Database Setup
+
+### Supabase Integration
+
+Aplikasi ini sudah terintegrasi penuh dengan Supabase sebagai backend database.
+
+**Setup Database:**
+1. Baca tutorial lengkap di [SETUP_SUPABASE.md](./SETUP_SUPABASE.md)
+2. Buat project Supabase gratis
+3. Jalankan schema SQL (`supabase/schema.sql`)
+4. Konfigurasi environment variables
+5. Seed database dengan mock data
+
+**Database Schema:**
+- ✅ 7 tabel utama (gardens, tasks, harvests, issues, maintenances, documentation, expenses)
+- ✅ Foreign key relationships dengan CASCADE delete
+- ✅ Indexes untuk performa query optimal
+- ✅ Triggers untuk auto-update timestamps
+- ✅ Validation dengan CHECK constraints
+
 ## 🐛 Known Issues / Limitations
 
-- **No authentication**: MVP tidak include login/auth
-- **In-memory state**: Semua perubahan hilang saat refresh (expected untuk MVP)
-- **No real file upload**: Photo upload menggunakan placeholder URLs
-- **No backend**: Semua data adalah mock data client-side
+- **No authentication**: Belum ada login/auth (bisa ditambahkan dengan Supabase Auth)
+- **No real file upload**: Photo upload menggunakan placeholder URLs (bisa ditambahkan dengan Supabase Storage)
+- **RLS disabled**: Row Level Security dinonaktifkan untuk development
 
 ## 📚 Resources
 
