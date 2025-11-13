@@ -3,9 +3,13 @@
  * This will create all tables, indexes, and triggers
  */
 
+// Load environment variables from .env.local
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
+
 import { createClient } from '@supabase/supabase-js';
 import * as fs from 'fs';
-import * as path from 'path';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
