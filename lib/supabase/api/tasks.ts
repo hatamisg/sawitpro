@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Task = Database['public']['Tables']['tasks']['Row'];
 type TaskInsert = Database['public']['Tables']['tasks']['Insert'];
@@ -43,6 +44,8 @@ function convertToDb(task: any): TaskInsert | TaskUpdate {
  */
 export async function getTasksByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await supabase
       .from('tasks')
       .select('*')
@@ -68,6 +71,8 @@ export async function getTasksByGarden(gardenId: string) {
  */
 export async function createTask(task: any) {
   try {
+    validateUUID(task.gardenId, 'Garden ID');
+
     const taskData = convertToDb(task) as TaskInsert;
 
     const { data, error } = await (supabase as any)
@@ -95,6 +100,8 @@ export async function createTask(task: any) {
  */
 export async function updateTask(id: string, task: any) {
   try {
+    validateUUID(id, 'Task ID');
+
     const taskData = convertToDb(task) as TaskUpdate;
 
     const { data, error } = await (supabase as any)
@@ -123,6 +130,8 @@ export async function updateTask(id: string, task: any) {
  */
 export async function updateTaskStatus(id: string, status: 'To Do' | 'In Progress' | 'Done') {
   try {
+    validateUUID(id, 'Task ID');
+
     const { data, error } = await (supabase as any)
       .from('tasks')
       .update({ status })
@@ -149,6 +158,8 @@ export async function updateTaskStatus(id: string, status: 'To Do' | 'In Progres
  */
 export async function deleteTask(id: string) {
   try {
+    validateUUID(id, 'Task ID');
+
     const { error } = await supabase
       .from('tasks')
       .delete()

@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
+import { validateUUID } from '@/lib/utils';
 
 type Issue = Database['public']['Tables']['issues']['Row'];
 type IssueInsert = Database['public']['Tables']['issues']['Insert'];
@@ -51,6 +52,8 @@ function convertToDb(issue: any): IssueInsert | IssueUpdate {
  */
 export async function getIssuesByGarden(gardenId: string) {
   try {
+    validateUUID(gardenId, 'Garden ID');
+
     const { data, error } = await supabase
       .from('issues')
       .select('*')
@@ -76,6 +79,8 @@ export async function getIssuesByGarden(gardenId: string) {
  */
 export async function createIssue(issue: any) {
   try {
+    validateUUID(issue.gardenId, 'Garden ID');
+
     const issueData = convertToDb(issue) as IssueInsert;
 
     const { data, error } = await (supabase as any)
@@ -103,6 +108,8 @@ export async function createIssue(issue: any) {
  */
 export async function updateIssue(id: string, issue: any) {
   try {
+    validateUUID(id, 'Issue ID');
+
     const issueData = convertToDb(issue) as IssueUpdate;
 
     const { data, error } = await (supabase as any)
@@ -131,6 +138,8 @@ export async function updateIssue(id: string, issue: any) {
  */
 export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved') {
   try {
+    validateUUID(id, 'Issue ID');
+
     const updateData: any = { status };
 
     if (status === 'Resolved') {
@@ -165,6 +174,8 @@ export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved')
  */
 export async function deleteIssue(id: string) {
   try {
+    validateUUID(id, 'Issue ID');
+
     const { error } = await supabase
       .from('issues')
       .delete()
