@@ -30,13 +30,8 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if Supabase is configured
-  const isSupabaseConfigured = () => {
-    return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
-  };
-
   // Determine if we should use Supabase
-  const shouldUseSupabase = useSupabase && isSupabaseConfigured();
+  const shouldUseSupabase = useSupabase;
 
   // Fetch gardens on mount
   useEffect(() => {
@@ -50,6 +45,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     try {
       if (shouldUseSupabase) {
         // Fetch from Supabase
+        console.log('📡 Fetching gardens from Supabase...');
         const { data, error } = await gardensApi.getAllGardens();
 
         if (error) {
@@ -57,18 +53,20 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
         }
 
         setGardens(data || []);
+        console.log(`✅ Successfully loaded ${data?.length || 0} gardens from Supabase`);
       } else {
         // Use mock data
+        console.log('📋 Using mock data (Supabase not configured)');
         setGardens(mockGardens);
       }
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to fetch gardens';
       setError(errorMessage);
-      console.error('Error fetching gardens:', err);
+      console.error('❌ Error fetching gardens:', err);
 
       // Fallback to mock data if Supabase fails
       if (shouldUseSupabase) {
-        console.log('Falling back to mock data');
+        console.log('⚠️ Falling back to mock data due to error');
         setGardens(mockGardens);
       }
     } finally {
@@ -80,6 +78,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     try {
       if (shouldUseSupabase) {
         // Create in Supabase
+        console.log('📡 Creating garden in Supabase...');
         const { data, error } = await gardensApi.createGarden(gardenData);
 
         if (error) {
@@ -88,11 +87,13 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
 
         if (data) {
           setGardens(prev => [data, ...prev]);
-          toast.success('Kebun berhasil ditambahkan!');
+          toast.success('Kebun berhasil ditambahkan ke database!');
+          console.log('✅ Garden created in Supabase:', data.id);
           return true;
         }
       } else {
         // Create in local state (mock)
+        console.log('📋 Creating garden in mock data (not persisted)');
         const newGarden: Garden = {
           ...gardenData,
           id: generateUUID(),
@@ -100,7 +101,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
           updatedAt: new Date(),
         };
         setGardens(prev => [newGarden, ...prev]);
-        toast.success('Kebun berhasil ditambahkan!');
+        toast.success('Kebun berhasil ditambahkan! (Mock data - tidak tersimpan di database)');
         return true;
       }
 
@@ -108,7 +109,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to create garden';
       toast.error(errorMessage);
-      console.error('Error creating garden:', err);
+      console.error('❌ Error creating garden:', err);
       return false;
     }
   };
@@ -117,6 +118,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     try {
       if (shouldUseSupabase) {
         // Update in Supabase
+        console.log('📡 Updating garden in Supabase:', id);
         const { data, error } = await gardensApi.updateGarden(id, gardenData);
 
         if (error) {
@@ -125,17 +127,19 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
 
         if (data) {
           setGardens(prev => prev.map(g => g.id === id ? data : g));
-          toast.success('Kebun berhasil diperbarui!');
+          toast.success('Kebun berhasil diperbarui di database!');
+          console.log('✅ Garden updated in Supabase');
           return true;
         }
       } else {
         // Update in local state (mock)
+        console.log('📋 Updating garden in mock data (not persisted):', id);
         setGardens(prev => prev.map(g =>
           g.id === id
             ? { ...g, ...gardenData, updatedAt: new Date() }
             : g
         ));
-        toast.success('Kebun berhasil diperbarui!');
+        toast.success('Kebun berhasil diperbarui! (Mock data - tidak tersimpan di database)');
         return true;
       }
 
@@ -143,7 +147,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to update garden';
       toast.error(errorMessage);
-      console.error('Error updating garden:', err);
+      console.error('❌ Error updating garden:', err);
       return false;
     }
   };
@@ -152,6 +156,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     try {
       if (shouldUseSupabase) {
         // Delete from Supabase
+        console.log('📡 Deleting garden from Supabase:', id);
         const { success, error } = await gardensApi.deleteGarden(id);
 
         if (error) {
@@ -160,13 +165,15 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
 
         if (success) {
           setGardens(prev => prev.filter(g => g.id !== id));
-          toast.success('Kebun berhasil dihapus!');
+          toast.success('Kebun berhasil dihapus dari database!');
+          console.log('✅ Garden deleted from Supabase');
           return true;
         }
       } else {
         // Delete from local state (mock)
+        console.log('📋 Deleting garden from mock data (not persisted):', id);
         setGardens(prev => prev.filter(g => g.id !== id));
-        toast.success('Kebun berhasil dihapus!');
+        toast.success('Kebun berhasil dihapus! (Mock data - tidak tersimpan di database)');
         return true;
       }
 
@@ -174,7 +181,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to delete garden';
       toast.error(errorMessage);
-      console.error('Error deleting garden:', err);
+      console.error('❌ Error deleting garden:', err);
       return false;
     }
   };

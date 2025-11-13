@@ -1,4 +1,4 @@
-import { supabase, handleSupabaseError } from '../client';
+import { supabase, handleSupabaseError, isSupabaseConfigured } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
 
@@ -42,6 +42,10 @@ function convertToDb(garden: any): GardenInsert | GardenUpdate {
  */
 export async function getAllGardens() {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
@@ -66,6 +70,10 @@ export async function getAllGardens() {
  */
 export async function getGardenById(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Garden ID');
 
     const { data, error } = await supabase
@@ -93,6 +101,10 @@ export async function getGardenById(id: string) {
  */
 export async function createGarden(garden: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const gardenData = convertToDb(garden) as GardenInsert;
 
     const { data, error } = await (supabase as any)
@@ -120,6 +132,10 @@ export async function createGarden(garden: any) {
  */
 export async function updateGarden(id: string, garden: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Garden ID');
 
     const gardenData = convertToDb(garden) as GardenUpdate;
@@ -150,6 +166,10 @@ export async function updateGarden(id: string, garden: any) {
  */
 export async function deleteGarden(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Garden ID');
 
     const { error } = await supabase
@@ -176,6 +196,10 @@ export async function deleteGarden(id: string) {
  */
 export async function searchGardens(query: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
@@ -201,6 +225,10 @@ export async function searchGardens(query: string) {
  */
 export async function getGardensByStatus(status: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
