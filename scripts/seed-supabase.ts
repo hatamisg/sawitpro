@@ -11,6 +11,11 @@
  * 4. Run this script: npm run seed
  */
 
+// Load environment variables from .env.local
+import dotenv from 'dotenv';
+import path from 'path';
+dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
+
 import { supabase } from '../lib/supabase/client';
 import { gardens, tasks, harvests, issues, maintenances, documentation, expenses } from '../lib/data/mock-data';
 
