@@ -23,13 +23,14 @@ async function seedDatabase() {
   console.log('🌱 Starting database seeding...\n');
 
   try {
-    // 1. Seed Gardens
+    // 1. Seed Gardens and create ID mapping
     console.log('📍 Seeding gardens...');
-    const gardenPromises = gardens.map(async (garden) => {
-      const { data, error } = await (supabase as any)
+    const gardenIdMap = new Map<string, string>();
+
+    for (const garden of gardens) {
+      const { data, error } = await supabase
         .from('gardens')
         .insert({
-          id: garden.id,
           nama: garden.nama,
           lokasi: garden.lokasi,
           lokasi_lengkap: garden.lokasiLengkap,
@@ -41,27 +42,29 @@ async function seedDatabase() {
           created_at: garden.createdAt.toISOString(),
           updated_at: garden.updatedAt.toISOString(),
         })
-        .select();
+        .select()
+        .single();
 
       if (error) {
         console.error(`  ❌ Error seeding garden ${garden.nama}:`, error.message);
-      } else {
+      } else if (data) {
+        gardenIdMap.set(garden.id, data.id);
         console.log(`  ✅ Seeded garden: ${garden.nama}`);
       }
-      return data;
-    });
+    }
 
-    await Promise.all(gardenPromises);
     console.log(`✅ Seeded ${gardens.length} gardens\n`);
 
     // 2. Seed Tasks
     console.log('📋 Seeding tasks...');
-    const taskPromises = tasks.map(async (task) => {
-      const { data, error } = await (supabase as any)
+    for (const task of tasks) {
+      const gardenUuid = gardenIdMap.get(task.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('tasks')
         .insert({
-          id: task.id,
-          garden_id: task.gardenId,
+          garden_id: gardenUuid,
           judul: task.judul,
           deskripsi: task.deskripsi || null,
           kategori: task.kategori,
@@ -71,26 +74,24 @@ async function seedDatabase() {
           assigned_to: task.assignedTo || null,
           created_at: task.createdAt.toISOString(),
           updated_at: task.updatedAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding task ${task.judul}:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(taskPromises);
+    }
     console.log(`✅ Seeded ${tasks.length} tasks\n`);
 
     // 3. Seed Harvests
     console.log('🌾 Seeding harvests...');
-    const harvestPromises = harvests.map(async (harvest) => {
-      const { data, error } = await (supabase as any)
+    for (const harvest of harvests) {
+      const gardenUuid = gardenIdMap.get(harvest.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('harvests')
         .insert({
-          id: harvest.id,
-          garden_id: harvest.gardenId,
+          garden_id: gardenUuid,
           tanggal: harvest.tanggal.toISOString().split('T')[0],
           jumlah_kg: harvest.jumlahKg,
           harga_per_kg: harvest.hargaPerKg,
@@ -98,26 +99,24 @@ async function seedDatabase() {
           kualitas: harvest.kualitas,
           catatan: harvest.catatan || null,
           created_at: harvest.createdAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding harvest:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(harvestPromises);
+    }
     console.log(`✅ Seeded ${harvests.length} harvests\n`);
 
     // 4. Seed Issues
     console.log('⚠️  Seeding issues...');
-    const issuePromises = issues.map(async (issue) => {
-      const { data, error } = await (supabase as any)
+    for (const issue of issues) {
+      const gardenUuid = gardenIdMap.get(issue.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('issues')
         .insert({
-          id: issue.id,
-          garden_id: issue.gardenId,
+          garden_id: gardenUuid,
           judul: issue.judul,
           deskripsi: issue.deskripsi,
           area_terdampak: issue.areaTerdampak,
@@ -129,26 +128,24 @@ async function seedDatabase() {
           tanggal_selesai: issue.tanggalSelesai ? issue.tanggalSelesai.toISOString().split('T')[0] : null,
           created_at: issue.createdAt.toISOString(),
           updated_at: issue.updatedAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding issue ${issue.judul}:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(issuePromises);
+    }
     console.log(`✅ Seeded ${issues.length} issues\n`);
 
     // 5. Seed Maintenances
     console.log('🔧 Seeding maintenances...');
-    const maintenancePromises = maintenances.map(async (maintenance) => {
-      const { data, error } = await (supabase as any)
+    for (const maintenance of maintenances) {
+      const gardenUuid = gardenIdMap.get(maintenance.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('maintenances')
         .insert({
-          id: maintenance.id,
-          garden_id: maintenance.gardenId,
+          garden_id: gardenUuid,
           jenis_perawatan: maintenance.jenisPerawatan,
           judul: maintenance.judul,
           tanggal_dijadwalkan: maintenance.tanggalDijadwalkan.toISOString().split('T')[0],
@@ -160,26 +157,24 @@ async function seedDatabase() {
           tanggal_selesai: maintenance.tanggalSelesai ? maintenance.tanggalSelesai.toISOString().split('T')[0] : null,
           created_at: maintenance.createdAt.toISOString(),
           updated_at: maintenance.updatedAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding maintenance ${maintenance.judul}:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(maintenancePromises);
+    }
     console.log(`✅ Seeded ${maintenances.length} maintenances\n`);
 
     // 6. Seed Documentation
     console.log('📄 Seeding documentation...');
-    const docPromises = documentation.map(async (doc) => {
-      const { data, error } = await (supabase as any)
+    for (const doc of documentation) {
+      const gardenUuid = gardenIdMap.get(doc.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('documentation')
         .insert({
-          id: doc.id,
-          garden_id: doc.gardenId,
+          garden_id: gardenUuid,
           tipe: doc.tipe,
           judul: doc.judul,
           deskripsi: doc.deskripsi || null,
@@ -188,26 +183,24 @@ async function seedDatabase() {
           kategori: doc.kategori || null,
           created_at: doc.createdAt.toISOString(),
           updated_at: doc.updatedAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding documentation ${doc.judul}:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(docPromises);
+    }
     console.log(`✅ Seeded ${documentation.length} documentation items\n`);
 
     // 7. Seed Expenses
     console.log('💰 Seeding expenses...');
-    const expensePromises = expenses.map(async (expense) => {
-      const { data, error } = await (supabase as any)
+    for (const expense of expenses) {
+      const gardenUuid = gardenIdMap.get(expense.gardenId);
+      if (!gardenUuid) continue;
+
+      const { error } = await supabase
         .from('expenses')
         .insert({
-          id: expense.id,
-          garden_id: expense.gardenId,
+          garden_id: gardenUuid,
           tanggal: expense.tanggal.toISOString().split('T')[0],
           kategori: expense.kategori,
           deskripsi: expense.deskripsi,
@@ -215,16 +208,12 @@ async function seedDatabase() {
           catatan: expense.catatan || null,
           created_at: expense.createdAt.toISOString(),
           updated_at: expense.updatedAt.toISOString(),
-        })
-        .select();
+        });
 
       if (error) {
         console.error(`  ❌ Error seeding expense:`, error.message);
       }
-      return data;
-    });
-
-    await Promise.all(expensePromises);
+    }
     console.log(`✅ Seeded ${expenses.length} expenses\n`);
 
     console.log('✅ Database seeding completed successfully! 🎉\n');
