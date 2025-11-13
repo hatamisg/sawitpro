@@ -2,11 +2,17 @@
  * Script to seed Supabase database with mock data
  * Run this script after setting up your Supabase project
  *
- * Usage: npx tsx scripts/seed-supabase.ts
+ * Usage: npm run seed
+ *
+ * Prerequisites:
+ * 1. Create a Supabase project at https://supabase.com
+ * 2. Run the schema.sql file in Supabase SQL Editor
+ * 3. Copy .env.local.example to .env.local and fill in your Supabase credentials
+ * 4. Run this script: npm run seed
  */
 
 import { supabase } from '../lib/supabase/client';
-import { gardens, tasks, harvests, issues, maintenances, documentation } from '../lib/data/mock-data';
+import { gardens, tasks, harvests, issues, maintenances, documentation, expenses } from '../lib/data/mock-data';
 
 async function seedDatabase() {
   console.log('🌱 Starting database seeding...\n');
@@ -189,6 +195,33 @@ async function seedDatabase() {
     await Promise.all(docPromises);
     console.log(`✅ Seeded ${documentation.length} documentation items\n`);
 
+    // 7. Seed Expenses
+    console.log('💰 Seeding expenses...');
+    const expensePromises = expenses.map(async (expense) => {
+      const { data, error } = await (supabase as any)
+        .from('expenses')
+        .insert({
+          id: expense.id,
+          garden_id: expense.gardenId,
+          tanggal: expense.tanggal.toISOString().split('T')[0],
+          kategori: expense.kategori,
+          deskripsi: expense.deskripsi,
+          jumlah: expense.jumlah,
+          catatan: expense.catatan || null,
+          created_at: expense.createdAt.toISOString(),
+          updated_at: expense.updatedAt.toISOString(),
+        })
+        .select();
+
+      if (error) {
+        console.error(`  ❌ Error seeding expense:`, error.message);
+      }
+      return data;
+    });
+
+    await Promise.all(expensePromises);
+    console.log(`✅ Seeded ${expenses.length} expenses\n`);
+
     console.log('✅ Database seeding completed successfully! 🎉\n');
     console.log('Summary:');
     console.log(`  - Gardens: ${gardens.length}`);
@@ -197,6 +230,7 @@ async function seedDatabase() {
     console.log(`  - Issues: ${issues.length}`);
     console.log(`  - Maintenances: ${maintenances.length}`);
     console.log(`  - Documentation: ${documentation.length}`);
+    console.log(`  - Expenses: ${expenses.length}`);
 
   } catch (error) {
     console.error('❌ Error during seeding:', error);

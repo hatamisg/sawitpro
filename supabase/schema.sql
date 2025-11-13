@@ -108,6 +108,21 @@ CREATE TABLE documentation (
 );
 
 -- ============================================
+-- 7. EXPENSES TABLE
+-- ============================================
+CREATE TABLE expenses (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  garden_id UUID NOT NULL REFERENCES gardens(id) ON DELETE CASCADE,
+  tanggal DATE NOT NULL,
+  kategori VARCHAR(50) NOT NULL CHECK (kategori IN ('Pupuk', 'Pestisida', 'Peralatan', 'Tenaga Kerja', 'Transportasi', 'Lainnya')),
+  deskripsi VARCHAR(255) NOT NULL,
+  jumlah DECIMAL(15, 2) NOT NULL CHECK (jumlah > 0),
+  catatan TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW()),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())
+);
+
+-- ============================================
 -- INDEXES for better query performance
 -- ============================================
 
@@ -138,6 +153,11 @@ CREATE INDEX idx_maintenances_tanggal_dijadwalkan ON maintenances(tanggal_dijadw
 CREATE INDEX idx_documentation_garden_id ON documentation(garden_id);
 CREATE INDEX idx_documentation_tipe ON documentation(tipe);
 
+-- Expenses indexes
+CREATE INDEX idx_expenses_garden_id ON expenses(garden_id);
+CREATE INDEX idx_expenses_tanggal ON expenses(tanggal);
+CREATE INDEX idx_expenses_kategori ON expenses(kategori);
+
 -- ============================================
 -- FUNCTIONS AND TRIGGERS
 -- ============================================
@@ -165,6 +185,9 @@ CREATE TRIGGER update_maintenances_updated_at BEFORE UPDATE ON maintenances
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TRIGGER update_documentation_updated_at BEFORE UPDATE ON documentation
+  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+CREATE TRIGGER update_expenses_updated_at BEFORE UPDATE ON expenses
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Function to calculate harvest total value
@@ -211,3 +234,4 @@ COMMENT ON TABLE harvests IS 'Records harvest data including quantity, price, an
 COMMENT ON TABLE issues IS 'Tracks problems and issues in gardens';
 COMMENT ON TABLE maintenances IS 'Schedules and tracks maintenance activities';
 COMMENT ON TABLE documentation IS 'Stores photos, documents, and notes for gardens';
+COMMENT ON TABLE expenses IS 'Stores expense records for each garden including fertilizer, pesticides, equipment, labor, and other costs';
