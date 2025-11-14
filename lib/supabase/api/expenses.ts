@@ -113,6 +113,7 @@ export async function createExpense(expense: any) {
 
 /**
  * Update an existing expense
+ * Accepts both UUID and slug formats for expense.gardenId
  */
 export async function updateExpense(id: string, expense: any) {
   try {
@@ -122,7 +123,16 @@ export async function updateExpense(id: string, expense: any) {
 
     validateUUID(id, 'Expense ID');
 
-    const expenseData = convertToDb(expense);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(expense.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update expense with resolved UUID
+    const expenseWithResolvedId = { ...expense, gardenId };
+    const expenseData = convertToDb(expenseWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('expenses')

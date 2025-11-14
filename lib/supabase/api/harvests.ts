@@ -114,6 +114,7 @@ export async function createHarvest(harvest: any) {
 
 /**
  * Update an existing harvest
+ * Accepts both UUID and slug formats for harvest.gardenId
  */
 export async function updateHarvest(id: string, harvest: any) {
   try {
@@ -123,7 +124,16 @@ export async function updateHarvest(id: string, harvest: any) {
 
     validateUUID(id, 'Harvest ID');
 
-    const harvestData = convertToDb(harvest);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(harvest.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update harvest with resolved UUID
+    const harvestWithResolvedId = { ...harvest, gardenId };
+    const harvestData = convertToDb(harvestWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('harvests')
