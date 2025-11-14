@@ -166,6 +166,7 @@ export async function createDocumentation(doc: any) {
 
 /**
  * Update documentation
+ * Accepts both UUID and slug formats for doc.gardenId
  */
 export async function updateDocumentation(id: string, doc: any) {
   try {
@@ -175,7 +176,16 @@ export async function updateDocumentation(id: string, doc: any) {
 
     validateUUID(id, 'Documentation ID');
 
-    const docData = convertToDbUpdate(doc);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(doc.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update documentation with resolved UUID
+    const docWithResolvedId = { ...doc, gardenId };
+    const docData = convertToDbUpdate(docWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('documentation')

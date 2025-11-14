@@ -127,6 +127,7 @@ export async function createMaintenance(maintenance: any) {
 
 /**
  * Update a maintenance
+ * Accepts both UUID and slug formats for maintenance.gardenId
  */
 export async function updateMaintenance(id: string, maintenance: any) {
   try {
@@ -136,7 +137,16 @@ export async function updateMaintenance(id: string, maintenance: any) {
 
     validateUUID(id, 'Maintenance ID');
 
-    const maintenanceData = convertToDb(maintenance) as MaintenanceUpdate;
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(maintenance.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update maintenance with resolved UUID
+    const maintenanceWithResolvedId = { ...maintenance, gardenId };
+    const maintenanceData = convertToDb(maintenanceWithResolvedId) as MaintenanceUpdate;
 
     const { data, error } = await (supabase as any)
       .from('maintenances')

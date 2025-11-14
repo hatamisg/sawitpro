@@ -127,6 +127,7 @@ export async function createIssue(issue: any) {
 
 /**
  * Update an issue
+ * Accepts both UUID and slug formats for issue.gardenId
  */
 export async function updateIssue(id: string, issue: any) {
   try {
@@ -136,7 +137,16 @@ export async function updateIssue(id: string, issue: any) {
 
     validateUUID(id, 'Issue ID');
 
-    const issueData = convertToDb(issue) as IssueUpdate;
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(issue.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update issue with resolved UUID
+    const issueWithResolvedId = { ...issue, gardenId };
+    const issueData = convertToDb(issueWithResolvedId) as IssueUpdate;
 
     const { data, error } = await (supabase as any)
       .from('issues')
