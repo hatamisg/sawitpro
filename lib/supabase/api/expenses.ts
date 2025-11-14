@@ -95,13 +95,12 @@ export async function createExpense(expense: any) {
     const { data, error } = await (supabase as any)
       .from('expenses')
       .insert(expenseData)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -129,13 +128,12 @@ export async function updateExpense(id: string, expense: any) {
       .from('expenses')
       .update(expenseData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
