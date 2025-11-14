@@ -1,21 +1,20 @@
 "use client";
 
-import { Garden, Harvest, Task, Issue } from "@/types";
+import { Garden, Harvest, Issue } from "@/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { format, subMonths } from "date-fns";
 import { id } from "date-fns/locale";
-import { Calendar, CheckCircle2, AlertCircle, TrendingUp } from "lucide-react";
+import { AlertCircle, TrendingUp } from "lucide-react";
 
 interface TabInformasiProps {
   garden: Garden;
   harvests: Harvest[];
-  tasks: Task[];
   issues: Issue[];
 }
 
-export default function TabInformasi({ garden, harvests, tasks, issues }: TabInformasiProps) {
+export default function TabInformasi({ garden, harvests, issues }: TabInformasiProps) {
   // Prepare production chart data (last 6 months)
   const productionData = [];
   for (let i = 5; i >= 0; i--) {
@@ -40,23 +39,15 @@ export default function TabInformasi({ garden, harvests, tasks, issues }: TabInf
     : 0;
   const productivityPerHa = avgProduction / garden.luas;
 
-  // Recent activities (last 10 activities)
-  const activities = [
-    ...tasks.map((t) => ({
-      type: "task" as const,
-      date: t.updatedAt,
-      title: t.judul,
-      status: t.status,
-      prioritas: t.prioritas,
-    })),
-    ...issues.map((i) => ({
+  // Recent activities - only issues (last 10 activities)
+  const activities = issues
+    .map((i) => ({
       type: "issue" as const,
       date: i.updatedAt,
       title: i.judul,
       status: i.status,
       tingkatKeparahan: i.tingkatKeparahan,
-    })),
-  ]
+    }))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 10);
 
@@ -182,19 +173,6 @@ export default function TabInformasi({ garden, harvests, tasks, issues }: TabInf
             <CardTitle>Ringkasan</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <div>
-                <p className="text-sm text-gray-600">Total Task</p>
-                <p className="text-2xl font-bold text-gray-900">{tasks.length}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-600">Selesai</p>
-                <p className="text-xl font-bold text-green-600">
-                  {tasks.filter((t) => t.status === "Done").length}
-                </p>
-              </div>
-            </div>
-
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
               <div>
                 <p className="text-sm text-gray-600">Total Panen</p>
@@ -226,33 +204,33 @@ export default function TabInformasi({ garden, harvests, tasks, issues }: TabInf
         {/* Activity Timeline */}
         <Card>
           <CardHeader>
-            <CardTitle>Aktivitas Terkini</CardTitle>
+            <CardTitle>Masalah Terkini</CardTitle>
           </CardHeader>
           <CardContent>
             {activities.length === 0 ? (
-              <p className="text-center text-gray-500 py-8">Belum ada aktivitas</p>
+              <p className="text-center text-gray-500 py-8">Belum ada masalah</p>
             ) : (
               <div className="space-y-4">
                 {activities.map((activity, index) => (
                   <div key={index} className="flex gap-3">
                     <div className="flex-shrink-0">
-                      {activity.type === "task" ? (
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                          <CheckCircle2 className="h-4 w-4 text-blue-600" />
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                          <AlertCircle className="h-4 w-4 text-red-600" />
-                        </div>
-                      )}
+                      <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                        <AlertCircle className="h-4 w-4 text-red-600" />
+                      </div>
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {activity.title}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
+                        <Badge
+                          variant={activity.status === "Open" ? "destructive" : "secondary"}
+                          className="text-xs"
+                        >
+                          {activity.status}
+                        </Badge>
                         <Badge variant="outline" className="text-xs">
-                          {activity.type === "task" ? "Task" : "Masalah"}
+                          {activity.tingkatKeparahan}
                         </Badge>
                         <span className="text-xs text-gray-500">
                           {format(new Date(activity.date), "d MMM", { locale: id })}

@@ -97,3 +97,18 @@ export interface Expense {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface TodoItem {
+  id: string;
+  gardenId: string;
+  gardenName: string;
+  gardenSlug: string;
+  type: 'maintenance' | 'issue';
+  judul: string;
+  tanggal: Date;
+  kategori: string; // jenis_perawatan untuk maintenance, tingkat_keparahan untuk issue
+  status: string;
+  penanggungJawab?: string; // untuk maintenance
+  areaTerdampak?: string; // untuk issue
+  deskripsi?: string;
+}
