@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Garden } from "@/types";
 import { useEffect } from "react";
+import { generateSlug } from "@/lib/utils";
 
 const gardenSchema = z.object({
   nama: z.string().min(3, "Nama kebun minimal 3 karakter"),
@@ -78,7 +79,9 @@ export default function EditGardenModal({ open, onClose, onSubmit, garden }: Edi
   }, [garden, setValue]);
 
   const onFormSubmit = (data: GardenFormData) => {
-    onSubmit(data);
+    // Generate new slug if name changed, otherwise keep existing slug
+    const slug = data.nama !== garden?.nama ? generateSlug(data.nama) : (garden?.slug || generateSlug(data.nama));
+    onSubmit({ ...data, slug });
     reset();
   };
 

@@ -1,6 +1,7 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 type Documentation = Database['public']['Tables']['documentation']['Row'];
 type DocumentationInsert = Database['public']['Tables']['documentation']['Insert'];
@@ -50,10 +51,20 @@ function convertToDbUpdate(doc: any): DocumentationUpdate {
 
 /**
  * Fetch all documentation for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getDocumentationByGarden(gardenId: string) {
+export async function getDocumentationByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await (supabase as any)
       .from('documentation')
@@ -77,10 +88,20 @@ export async function getDocumentationByGarden(gardenId: string) {
 
 /**
  * Fetch documentation by type
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'dokumen' | 'catatan') {
+export async function getDocumentationByType(gardenIdOrSlug: string, tipe: 'foto' | 'dokumen' | 'catatan') {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await (supabase as any)
       .from('documentation')
@@ -105,12 +126,24 @@ export async function getDocumentationByType(gardenId: string, tipe: 'foto' | 'd
 
 /**
  * Create new documentation
+ * Accepts both UUID and slug formats for doc.gardenId
  */
 export async function createDocumentation(doc: any) {
   try {
-    validateUUID(doc.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const docData = convertToDbInsert(doc);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(doc.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update doc with resolved UUID
+    const docWithResolvedId = { ...doc, gardenId };
+    const docData = convertToDbInsert(docWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('documentation')
@@ -137,6 +170,10 @@ export async function createDocumentation(doc: any) {
  */
 export async function updateDocumentation(id: string, doc: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Documentation ID');
 
     const docData = convertToDbUpdate(doc);
@@ -167,6 +204,10 @@ export async function updateDocumentation(id: string, doc: any) {
  */
 export async function deleteDocumentation(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Documentation ID');
 
     const { error } = await (supabase as any)

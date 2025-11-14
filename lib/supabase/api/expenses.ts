@@ -1,5 +1,6 @@
 import { supabase, handleSupabaseError } from '../client';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 // Note: expenses table types not yet generated in Database types
 // Using any types temporarily until Supabase types are regenerated
@@ -35,10 +36,20 @@ function convertToDb(expense: any): any {
 
 /**
  * Fetch all expenses for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getExpensesByGarden(gardenId: string) {
+export async function getExpensesByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await (supabase as any)
       .from('expenses')
@@ -62,12 +73,24 @@ export async function getExpensesByGarden(gardenId: string) {
 
 /**
  * Create a new expense
+ * Accepts both UUID and slug formats for expense.gardenId
  */
 export async function createExpense(expense: any) {
   try {
-    validateUUID(expense.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const expenseData = convertToDb(expense);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(expense.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update expense with resolved UUID
+    const expenseWithResolvedId = { ...expense, gardenId };
+    const expenseData = convertToDb(expenseWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('expenses')
@@ -94,6 +117,10 @@ export async function createExpense(expense: any) {
  */
 export async function updateExpense(id: string, expense: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Expense ID');
 
     const expenseData = convertToDb(expense);
@@ -124,6 +151,10 @@ export async function updateExpense(id: string, expense: any) {
  */
 export async function deleteExpense(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Expense ID');
 
     const { error } = await (supabase as any)

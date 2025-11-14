@@ -1,6 +1,7 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 type Issue = Database['public']['Tables']['issues']['Row'];
 type IssueInsert = Database['public']['Tables']['issues']['Insert'];
@@ -49,10 +50,20 @@ function convertToDb(issue: any): IssueInsert | IssueUpdate {
 
 /**
  * Fetch all issues for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getIssuesByGarden(gardenId: string) {
+export async function getIssuesByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await supabase
       .from('issues')
@@ -76,12 +87,24 @@ export async function getIssuesByGarden(gardenId: string) {
 
 /**
  * Create a new issue
+ * Accepts both UUID and slug formats for issue.gardenId
  */
 export async function createIssue(issue: any) {
   try {
-    validateUUID(issue.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const issueData = convertToDb(issue) as IssueInsert;
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(issue.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update issue with resolved UUID
+    const issueWithResolvedId = { ...issue, gardenId };
+    const issueData = convertToDb(issueWithResolvedId) as IssueInsert;
 
     const { data, error } = await (supabase as any)
       .from('issues')
@@ -108,6 +131,10 @@ export async function createIssue(issue: any) {
  */
 export async function updateIssue(id: string, issue: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Issue ID');
 
     const issueData = convertToDb(issue) as IssueUpdate;
@@ -138,6 +165,10 @@ export async function updateIssue(id: string, issue: any) {
  */
 export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved') {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Issue ID');
 
     const updateData: any = { status };
@@ -174,6 +205,10 @@ export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved')
  */
 export async function deleteIssue(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Issue ID');
 
     const { error } = await supabase

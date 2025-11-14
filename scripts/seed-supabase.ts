@@ -18,9 +18,15 @@ dotenv.config({ path: path.resolve(__dirname, '../.env.local') });
 
 import { supabase } from '../lib/supabase/client';
 import { gardens, tasks, harvests, issues, maintenances, documentation, expenses } from '../lib/data/mock-data';
+import { generateSlug } from '../lib/utils';
 
 async function seedDatabase() {
   console.log('🌱 Starting database seeding...\n');
+
+  if (!supabase) {
+    console.error('❌ Supabase client is not configured. Please check your environment variables.');
+    process.exit(1);
+  }
 
   try {
     // 1. Seed Gardens and create ID mapping
@@ -28,10 +34,11 @@ async function seedDatabase() {
     const gardenIdMap = new Map<string, string>();
 
     for (const garden of gardens) {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from('gardens')
         .insert({
           nama: garden.nama,
+          slug: generateSlug(garden.nama),
           lokasi: garden.lokasi,
           lokasi_lengkap: garden.lokasiLengkap,
           luas: garden.luas,
@@ -61,7 +68,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(task.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('tasks')
         .insert({
           garden_id: gardenUuid,
@@ -88,7 +95,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(harvest.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('harvests')
         .insert({
           garden_id: gardenUuid,
@@ -113,7 +120,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(issue.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('issues')
         .insert({
           garden_id: gardenUuid,
@@ -142,7 +149,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(maintenance.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('maintenances')
         .insert({
           garden_id: gardenUuid,
@@ -171,7 +178,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(doc.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('documentation')
         .insert({
           garden_id: gardenUuid,
@@ -197,7 +204,7 @@ async function seedDatabase() {
       const gardenUuid = gardenIdMap.get(expense.gardenId);
       if (!gardenUuid) continue;
 
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('expenses')
         .insert({
           garden_id: gardenUuid,

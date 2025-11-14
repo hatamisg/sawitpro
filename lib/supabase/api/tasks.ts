@@ -1,6 +1,7 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 type Task = Database['public']['Tables']['tasks']['Row'];
 type TaskInsert = Database['public']['Tables']['tasks']['Insert'];
@@ -41,10 +42,20 @@ function convertToDb(task: any): TaskInsert | TaskUpdate {
 
 /**
  * Fetch all tasks for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getTasksByGarden(gardenId: string) {
+export async function getTasksByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await supabase
       .from('tasks')
@@ -68,12 +79,24 @@ export async function getTasksByGarden(gardenId: string) {
 
 /**
  * Create a new task
+ * Accepts both UUID and slug formats for task.gardenId
  */
 export async function createTask(task: any) {
   try {
-    validateUUID(task.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const taskData = convertToDb(task) as TaskInsert;
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(task.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update task with resolved UUID
+    const taskWithResolvedId = { ...task, gardenId };
+    const taskData = convertToDb(taskWithResolvedId) as TaskInsert;
 
     const { data, error } = await (supabase as any)
       .from('tasks')
@@ -100,6 +123,10 @@ export async function createTask(task: any) {
  */
 export async function updateTask(id: string, task: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Task ID');
 
     const taskData = convertToDb(task) as TaskUpdate;
@@ -130,6 +157,10 @@ export async function updateTask(id: string, task: any) {
  */
 export async function updateTaskStatus(id: string, status: 'To Do' | 'In Progress' | 'Done') {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Task ID');
 
     const { data, error } = await (supabase as any)
@@ -158,6 +189,10 @@ export async function updateTaskStatus(id: string, status: 'To Do' | 'In Progres
  */
 export async function deleteTask(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Task ID');
 
     const { error } = await supabase
