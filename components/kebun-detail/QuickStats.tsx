@@ -1,17 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { TrendingUp, Trees, ListTodo, AlertTriangle } from "lucide-react";
+import { TrendingUp, Trees, Wrench, AlertTriangle } from "lucide-react";
 
 interface QuickStatsProps {
   luas: number;
   jumlahPohon: number;
-  activeTasks: number;
+  upcomingMaintenances: number;
   openIssues: number;
 }
 
 export default function QuickStats({
   luas,
   jumlahPohon,
-  activeTasks,
+  upcomingMaintenances,
   openIssues,
 }: QuickStatsProps) {
   const stats = [
@@ -30,9 +30,9 @@ export default function QuickStats({
       bgColor: "bg-green-50",
     },
     {
-      label: "Task Aktif",
-      value: activeTasks,
-      icon: ListTodo,
+      label: "Perawatan Terjadwal",
+      value: upcomingMaintenances,
+      icon: Wrench,
       color: "text-orange-600",
       bgColor: "bg-orange-50",
     },

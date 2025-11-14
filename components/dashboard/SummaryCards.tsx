@@ -1,18 +1,16 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { MapPin, Trees, ListTodo, TrendingUp } from "lucide-react";
+import { MapPin, Trees, TrendingUp } from "lucide-react";
 
 interface SummaryCardsProps {
   totalGardens: number;
   totalLuas: number;
   totalPohon: number;
-  pendingTasks: number;
 }
 
 export default function SummaryCards({
   totalGardens,
   totalLuas,
   totalPohon,
-  pendingTasks,
 }: SummaryCardsProps) {
   const cards = [
     {
@@ -39,18 +37,10 @@ export default function SummaryCards({
       color: "text-emerald-600",
       bgColor: "bg-emerald-50",
     },
-    {
-      title: "Task Pending",
-      value: pendingTasks,
-      subtitle: "Perlu dikerjakan",
-      icon: ListTodo,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-    },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (

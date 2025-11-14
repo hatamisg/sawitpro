@@ -2,13 +2,12 @@
 
 import { useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
-import { gardens, tasks, harvests, issues, maintenances, documentation, expenses } from "@/lib/data/mock-data";
+import { gardens, harvests, issues, maintenances, documentation, expenses } from "@/lib/data/mock-data";
 import { notFound } from "next/navigation";
 import GardenHeader from "@/components/kebun-detail/GardenHeader";
 import QuickStats from "@/components/kebun-detail/QuickStats";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TabInformasi from "@/components/kebun-detail/tabs/TabInformasi";
-import TabTask from "@/components/kebun-detail/tabs/TabTask";
 import TabPanen from "@/components/kebun-detail/tabs/TabPanen";
 import TabMasalah from "@/components/kebun-detail/tabs/TabMasalah";
 import TabPerawatan from "@/components/kebun-detail/tabs/TabPerawatan";
@@ -49,7 +48,6 @@ export default function DetailKebunPage() {
   };
 
   // Get related data
-  const gardenTasks = tasks.filter((t) => t.gardenId === id);
   const gardenHarvests = harvests.filter((h) => h.gardenId === id);
   const gardenIssues = issues.filter((i) => i.gardenId === id);
   const gardenMaintenances = maintenances.filter((m) => m.gardenId === id);
@@ -57,10 +55,9 @@ export default function DetailKebunPage() {
   const gardenExpenses = expenses.filter((e) => e.gardenId === id);
 
   // Calculate quick stats
-  const activeTasks = gardenTasks.filter((t) => t.status !== "Done").length;
   const openIssues = gardenIssues.filter((i) => i.status === "Open").length;
   const upcomingMaintenances = gardenMaintenances.filter(
-    (m) => m.status === "Dijadwalkan"
+    (m) => m.status === "Dijadwalkan" || m.status === "Terlambat"
   ).length;
 
   return (
@@ -73,16 +70,15 @@ export default function DetailKebunPage() {
         <QuickStats
           luas={garden.luas}
           jumlahPohon={garden.jumlahPohon}
-          activeTasks={activeTasks}
+          upcomingMaintenances={upcomingMaintenances}
           openIssues={openIssues}
         />
 
         {/* Tabs */}
         <div className="mt-6">
           <Tabs defaultValue={defaultTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-7 lg:w-auto">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto">
               <TabsTrigger value="informasi">Informasi</TabsTrigger>
-              <TabsTrigger value="task">Task</TabsTrigger>
               <TabsTrigger value="panen">Panen</TabsTrigger>
               <TabsTrigger value="masalah">Masalah</TabsTrigger>
               <TabsTrigger value="perawatan">Perawatan</TabsTrigger>
@@ -94,13 +90,8 @@ export default function DetailKebunPage() {
               <TabInformasi
                 garden={garden}
                 harvests={gardenHarvests}
-                tasks={gardenTasks}
                 issues={gardenIssues}
               />
-            </TabsContent>
-
-            <TabsContent value="task" className="mt-6">
-              <TabTask gardenId={id} tasks={gardenTasks} />
             </TabsContent>
 
             <TabsContent value="panen" className="mt-6">

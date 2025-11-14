@@ -1,8 +1,7 @@
 import { Suspense } from "react";
-import { gardens, tasks, issues, harvests } from "@/lib/data/mock-data";
+import { gardens, harvests } from "@/lib/data/mock-data";
 import SummaryCards from "@/components/dashboard/SummaryCards";
-import TaskList from "@/components/dashboard/TaskList";
-import IssueList from "@/components/dashboard/IssueList";
+import TodoListNew from "@/components/dashboard/TodoListNew";
 import ProductionChart from "@/components/dashboard/ProductionChart";
 import GardenQuickAccess from "@/components/dashboard/GardenQuickAccess";
 
@@ -11,16 +10,6 @@ export default function DashboardPage() {
   const totalGardens = gardens.length;
   const totalLuas = gardens.reduce((sum, g) => sum + g.luas, 0);
   const totalPohon = gardens.reduce((sum, g) => sum + g.jumlahPohon, 0);
-  const pendingTasks = tasks.filter((t) => t.status !== "Done").length;
-
-  // Get high priority tasks
-  const urgentTasks = tasks
-    .filter((t) => t.prioritas === "High" && t.status !== "Done")
-    .sort((a, b) => new Date(a.tanggalTarget).getTime() - new Date(b.tanggalTarget).getTime())
-    .slice(0, 5);
-
-  // Get active issues
-  const activeIssues = issues.filter((i) => i.status === "Open").slice(0, 5);
 
   // Calculate monthly production (current month)
   const now = new Date();
@@ -58,20 +47,13 @@ export default function DashboardPage() {
             totalGardens={totalGardens}
             totalLuas={totalLuas}
             totalPohon={totalPohon}
-            pendingTasks={pendingTasks}
           />
         </Suspense>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-          {/* Task Mendesak */}
+        {/* Daftar To-Do Terpusat */}
+        <div className="mt-8">
           <Suspense fallback={<div>Loading...</div>}>
-            <TaskList tasks={urgentTasks} />
-          </Suspense>
-
-          {/* Masalah Aktif */}
-          <Suspense fallback={<div>Loading...</div>}>
-            <IssueList issues={activeIssues} />
+            <TodoListNew />
           </Suspense>
         </div>
 
