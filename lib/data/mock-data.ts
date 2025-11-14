@@ -4,10 +4,22 @@ import { subDays, subMonths, addDays, addWeeks } from 'date-fns';
 // Helper function to generate IDs
 const generateId = () => Math.random().toString(36).substring(2, 11);
 
+// UUID constants for gardens (replacing old garden-1, garden-2 format)
+const GARDEN_IDS = {
+  garden1: '550e8400-e29b-41d4-a716-446655440001',
+  garden2: '550e8400-e29b-41d4-a716-446655440002',
+  garden3: '550e8400-e29b-41d4-a716-446655440003',
+  garden4: '550e8400-e29b-41d4-a716-446655440004',
+  garden5: '550e8400-e29b-41d4-a716-446655440005',
+  garden6: '550e8400-e29b-41d4-a716-446655440006',
+  garden7: '550e8400-e29b-41d4-a716-446655440007',
+  garden8: '550e8400-e29b-41d4-a716-446655440008',
+};
+
 // GARDENS DATA
 export const gardens: Garden[] = [
   {
-    id: 'garden-1',
+    id: GARDEN_IDS.garden1,
     nama: 'Kebun Sawit Makmur',
     slug: 'kebun-sawit-makmur',
     lokasi: 'Riau',
@@ -21,7 +33,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 2),
   },
   {
-    id: 'garden-2',
+    id: GARDEN_IDS.garden2,
     nama: 'Kebun Sawit Sejahtera',
     slug: 'kebun-sawit-sejahtera',
     lokasi: 'Sumatera Utara',
@@ -35,7 +47,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 1),
   },
   {
-    id: 'garden-3',
+    id: GARDEN_IDS.garden3,
     nama: 'Kebun Sawit Jaya',
     slug: 'kebun-sawit-jaya',
     lokasi: 'Kalimantan Barat',
@@ -49,7 +61,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 5),
   },
   {
-    id: 'garden-4',
+    id: GARDEN_IDS.garden4,
     nama: 'Kebun Sawit Mandiri',
     slug: 'kebun-sawit-mandiri',
     lokasi: 'Jambi',
@@ -63,7 +75,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 3),
   },
   {
-    id: 'garden-5',
+    id: GARDEN_IDS.garden5,
     nama: 'Kebun Sawit Berkah',
     slug: 'kebun-sawit-berkah',
     lokasi: 'Riau',
@@ -77,7 +89,7 @@ export const gardens: Garden[] = [
     updatedAt: new Date(),
   },
   {
-    id: 'garden-6',
+    id: GARDEN_IDS.garden6,
     nama: 'Kebun Sawit Harapan',
     slug: 'kebun-sawit-harapan',
     lokasi: 'Sumatera Selatan',
@@ -91,7 +103,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 4),
   },
   {
-    id: 'garden-7',
+    id: GARDEN_IDS.garden7,
     nama: 'Kebun Sawit Maju',
     slug: 'kebun-sawit-maju',
     lokasi: 'Kalimantan Tengah',
@@ -105,7 +117,7 @@ export const gardens: Garden[] = [
     updatedAt: subDays(new Date(), 1),
   },
   {
-    id: 'garden-8',
+    id: GARDEN_IDS.garden8,
     nama: 'Kebun Sawit Gemilang',
     slug: 'kebun-sawit-gemilang',
     lokasi: 'Riau',
@@ -124,7 +136,7 @@ export const gardens: Garden[] = [
 export const tasks: Task[] = [
   {
     id: 'task-1',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     judul: 'Pemupukan NPK Blok A',
     deskripsi: 'Aplikasi pupuk NPK 15-15-15 sebanyak 2kg per pohon untuk blok A',
     kategori: 'Pemupukan',
@@ -137,7 +149,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-2',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     judul: 'Panen TBS Blok B dan C',
     deskripsi: 'Panen buah matang di blok B dan C, target 3 ton',
     kategori: 'Panen',
@@ -150,7 +162,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-3',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     judul: 'Pemangkasan Pelepah Tua',
     deskripsi: 'Pemangkasan pelepah tua dan berlebih untuk meningkatkan produktivitas',
     kategori: 'Perawatan',
@@ -163,7 +175,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-4',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     judul: 'Penyemprotan Hama Ulat Api',
     deskripsi: 'Penyemprotan insektisida untuk mengatasi serangan ulat api di area yang terdampak',
     kategori: 'Penyemprotan',
@@ -176,7 +188,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-5',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     judul: 'Inspeksi Kondisi Jalan',
     deskripsi: 'Pemeriksaan kondisi jalan dan perbaikan jika diperlukan',
     kategori: 'Lainnya',
@@ -189,7 +201,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-6',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     judul: 'Panen Rutin Mingguan',
     deskripsi: 'Panen rutin TBS matang untuk minggu ini',
     kategori: 'Panen',
@@ -202,7 +214,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-7',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     judul: 'Pembersihan Parit Drainase',
     deskripsi: 'Pembersihan parit untuk melancarkan drainase air',
     kategori: 'Perawatan',
@@ -215,7 +227,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-8',
-    gardenId: 'garden-7',
+    gardenId: GARDEN_IDS.garden7,
     judul: 'Aplikasi Dolomit',
     deskripsi: 'Pemberian kapur dolomit untuk menetralkan pH tanah',
     kategori: 'Pemupukan',
@@ -228,7 +240,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-9',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     judul: 'Panen TBS Premium',
     deskripsi: 'Panen buah dengan kualitas premium untuk kontrak khusus',
     kategori: 'Panen',
@@ -241,7 +253,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-10',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     judul: 'Penyemprotan Gulma',
     deskripsi: 'Aplikasi herbisida untuk pengendalian gulma',
     kategori: 'Penyemprotan',
@@ -254,7 +266,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-11',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     judul: 'Pemupukan Urea Blok D',
     deskripsi: 'Aplikasi pupuk urea untuk meningkatkan pertumbuhan vegetatif',
     kategori: 'Pemupukan',
@@ -267,7 +279,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-12',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     judul: 'Pengecekan Tanaman Replanting',
     deskripsi: 'Monitoring kondisi tanaman hasil replanting tahun lalu',
     kategori: 'Lainnya',
@@ -280,7 +292,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-13',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     judul: 'Perbaikan Jembatan',
     deskripsi: 'Perbaikan jembatan kayu yang rusak di area akses',
     kategori: 'Perawatan',
@@ -293,7 +305,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-14',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     judul: 'Pemupukan KCl',
     deskripsi: 'Aplikasi pupuk KCl untuk meningkatkan kualitas buah',
     kategori: 'Pemupukan',
@@ -306,7 +318,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-15',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     judul: 'Census Pohon',
     deskripsi: 'Perhitungan jumlah pohon produktif dan non-produktif',
     kategori: 'Lainnya',
@@ -319,7 +331,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-16',
-    gardenId: 'garden-7',
+    gardenId: GARDEN_IDS.garden7,
     judul: 'Panen TBS Minggu Ini',
     deskripsi: 'Panen rutin TBS untuk minggu ini target 2.5 ton',
     kategori: 'Panen',
@@ -332,7 +344,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-17',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     judul: 'Perawatan Sumur Bor',
     deskripsi: 'Maintenance sumur bor untuk sistem irigasi',
     kategori: 'Perawatan',
@@ -345,7 +357,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-18',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     judul: 'Penyemprotan Fungisida',
     deskripsi: 'Pencegahan penyakit busuk batang dengan fungisida',
     kategori: 'Penyemprotan',
@@ -358,7 +370,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-19',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     judul: 'Replanting Area Rusak',
     deskripsi: 'Penanaman ulang di area yang terdampak hama',
     kategori: 'Perawatan',
@@ -371,7 +383,7 @@ export const tasks: Task[] = [
   },
   {
     id: 'task-20',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     judul: 'Pelatihan Pemanen',
     deskripsi: 'Pelatihan teknik pemanenan yang benar untuk tim baru',
     kategori: 'Lainnya',
@@ -387,62 +399,62 @@ export const tasks: Task[] = [
 // HARVEST DATA - 30-40 records over 6-12 months
 export const harvests: Harvest[] = [
   // Garden 1 - Kebun Sawit Makmur
-  { id: 'h-1', gardenId: 'garden-1', tanggal: subMonths(new Date(), 11), jumlahKg: 3200, hargaPerKg: 2100, totalNilai: 6720000, kualitas: 'Baik', catatan: 'Kualitas buah baik', createdAt: subMonths(new Date(), 11) },
-  { id: 'h-2', gardenId: 'garden-1', tanggal: subMonths(new Date(), 10), jumlahKg: 3400, hargaPerKg: 2150, totalNilai: 7310000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 10) },
-  { id: 'h-3', gardenId: 'garden-1', tanggal: subMonths(new Date(), 9), jumlahKg: 3100, hargaPerKg: 2200, totalNilai: 6820000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 9) },
-  { id: 'h-4', gardenId: 'garden-1', tanggal: subMonths(new Date(), 8), jumlahKg: 3300, hargaPerKg: 2180, totalNilai: 7194000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 8) },
-  { id: 'h-5', gardenId: 'garden-1', tanggal: subMonths(new Date(), 7), jumlahKg: 2900, hargaPerKg: 2100, totalNilai: 6090000, kualitas: 'Baik', catatan: 'Cuaca hujan', createdAt: subMonths(new Date(), 7) },
-  { id: 'h-6', gardenId: 'garden-1', tanggal: subMonths(new Date(), 6), jumlahKg: 3250, hargaPerKg: 2250, totalNilai: 7312500, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 6) },
-  { id: 'h-7', gardenId: 'garden-1', tanggal: subMonths(new Date(), 5), jumlahKg: 3150, hargaPerKg: 2300, totalNilai: 7245000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
-  { id: 'h-8', gardenId: 'garden-1', tanggal: subMonths(new Date(), 4), jumlahKg: 3400, hargaPerKg: 2350, totalNilai: 7990000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 4) },
-  { id: 'h-9', gardenId: 'garden-1', tanggal: subMonths(new Date(), 3), jumlahKg: 3500, hargaPerKg: 2400, totalNilai: 8400000, kualitas: 'Baik Sekali', catatan: 'Produksi peak', createdAt: subMonths(new Date(), 3) },
-  { id: 'h-10', gardenId: 'garden-1', tanggal: subMonths(new Date(), 2), jumlahKg: 3300, hargaPerKg: 2380, totalNilai: 7854000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-11', gardenId: 'garden-1', tanggal: subMonths(new Date(), 1), jumlahKg: 3200, hargaPerKg: 2420, totalNilai: 7744000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
-  { id: 'h-12', gardenId: 'garden-1', tanggal: subDays(new Date(), 5), jumlahKg: 3100, hargaPerKg: 2450, totalNilai: 7595000, kualitas: 'Baik', catatan: '', createdAt: subDays(new Date(), 5) },
+  { id: 'h-1', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 11), jumlahKg: 3200, hargaPerKg: 2100, totalNilai: 6720000, kualitas: 'Baik', catatan: 'Kualitas buah baik', createdAt: subMonths(new Date(), 11) },
+  { id: 'h-2', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 10), jumlahKg: 3400, hargaPerKg: 2150, totalNilai: 7310000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 10) },
+  { id: 'h-3', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 9), jumlahKg: 3100, hargaPerKg: 2200, totalNilai: 6820000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 9) },
+  { id: 'h-4', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 8), jumlahKg: 3300, hargaPerKg: 2180, totalNilai: 7194000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 8) },
+  { id: 'h-5', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 7), jumlahKg: 2900, hargaPerKg: 2100, totalNilai: 6090000, kualitas: 'Baik', catatan: 'Cuaca hujan', createdAt: subMonths(new Date(), 7) },
+  { id: 'h-6', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 6), jumlahKg: 3250, hargaPerKg: 2250, totalNilai: 7312500, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 6) },
+  { id: 'h-7', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 5), jumlahKg: 3150, hargaPerKg: 2300, totalNilai: 7245000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
+  { id: 'h-8', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 4), jumlahKg: 3400, hargaPerKg: 2350, totalNilai: 7990000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 4) },
+  { id: 'h-9', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 3), jumlahKg: 3500, hargaPerKg: 2400, totalNilai: 8400000, kualitas: 'Baik Sekali', catatan: 'Produksi peak', createdAt: subMonths(new Date(), 3) },
+  { id: 'h-10', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 2), jumlahKg: 3300, hargaPerKg: 2380, totalNilai: 7854000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-11', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 1), jumlahKg: 3200, hargaPerKg: 2420, totalNilai: 7744000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-12', gardenId: GARDEN_IDS.garden1, tanggal: subDays(new Date(), 5), jumlahKg: 3100, hargaPerKg: 2450, totalNilai: 7595000, kualitas: 'Baik', catatan: '', createdAt: subDays(new Date(), 5) },
 
   // Garden 2 - Kebun Sawit Sejahtera
-  { id: 'h-13', gardenId: 'garden-2', tanggal: subMonths(new Date(), 11), jumlahKg: 2400, hargaPerKg: 2100, totalNilai: 5040000, kualitas: 'Cukup', catatan: '', createdAt: subMonths(new Date(), 11) },
-  { id: 'h-14', gardenId: 'garden-2', tanggal: subMonths(new Date(), 10), jumlahKg: 2500, hargaPerKg: 2150, totalNilai: 5375000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 10) },
-  { id: 'h-15', gardenId: 'garden-2', tanggal: subMonths(new Date(), 9), jumlahKg: 2350, hargaPerKg: 2200, totalNilai: 5170000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 9) },
-  { id: 'h-16', gardenId: 'garden-2', tanggal: subMonths(new Date(), 8), jumlahKg: 2600, hargaPerKg: 2180, totalNilai: 5668000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 8) },
-  { id: 'h-17', gardenId: 'garden-2', tanggal: subMonths(new Date(), 7), jumlahKg: 2200, hargaPerKg: 2100, totalNilai: 4620000, kualitas: 'Cukup', catatan: 'Produksi menurun', createdAt: subMonths(new Date(), 7) },
-  { id: 'h-18', gardenId: 'garden-2', tanggal: subMonths(new Date(), 6), jumlahKg: 2450, hargaPerKg: 2250, totalNilai: 5512500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 6) },
-  { id: 'h-19', gardenId: 'garden-2', tanggal: subMonths(new Date(), 5), jumlahKg: 2550, hargaPerKg: 2300, totalNilai: 5865000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
-  { id: 'h-20', gardenId: 'garden-2', tanggal: subMonths(new Date(), 4), jumlahKg: 2480, hargaPerKg: 2350, totalNilai: 5828000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
-  { id: 'h-21', gardenId: 'garden-2', tanggal: subMonths(new Date(), 3), jumlahKg: 2520, hargaPerKg: 2400, totalNilai: 6048000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
-  { id: 'h-22', gardenId: 'garden-2', tanggal: subMonths(new Date(), 2), jumlahKg: 2300, hargaPerKg: 2380, totalNilai: 5474000, kualitas: 'Cukup', catatan: '', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-23', gardenId: 'garden-2', tanggal: subMonths(new Date(), 1), jumlahKg: 2400, hargaPerKg: 2420, totalNilai: 5808000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-13', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 11), jumlahKg: 2400, hargaPerKg: 2100, totalNilai: 5040000, kualitas: 'Cukup', catatan: '', createdAt: subMonths(new Date(), 11) },
+  { id: 'h-14', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 10), jumlahKg: 2500, hargaPerKg: 2150, totalNilai: 5375000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 10) },
+  { id: 'h-15', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 9), jumlahKg: 2350, hargaPerKg: 2200, totalNilai: 5170000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 9) },
+  { id: 'h-16', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 8), jumlahKg: 2600, hargaPerKg: 2180, totalNilai: 5668000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 8) },
+  { id: 'h-17', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 7), jumlahKg: 2200, hargaPerKg: 2100, totalNilai: 4620000, kualitas: 'Cukup', catatan: 'Produksi menurun', createdAt: subMonths(new Date(), 7) },
+  { id: 'h-18', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 6), jumlahKg: 2450, hargaPerKg: 2250, totalNilai: 5512500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 6) },
+  { id: 'h-19', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 5), jumlahKg: 2550, hargaPerKg: 2300, totalNilai: 5865000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
+  { id: 'h-20', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 4), jumlahKg: 2480, hargaPerKg: 2350, totalNilai: 5828000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
+  { id: 'h-21', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 3), jumlahKg: 2520, hargaPerKg: 2400, totalNilai: 6048000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
+  { id: 'h-22', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 2), jumlahKg: 2300, hargaPerKg: 2380, totalNilai: 5474000, kualitas: 'Cukup', catatan: '', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-23', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 1), jumlahKg: 2400, hargaPerKg: 2420, totalNilai: 5808000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
 
   // Garden 3 - Kebun Sawit Jaya
-  { id: 'h-24', gardenId: 'garden-3', tanggal: subMonths(new Date(), 6), jumlahKg: 4100, hargaPerKg: 2250, totalNilai: 9225000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 6) },
-  { id: 'h-25', gardenId: 'garden-3', tanggal: subMonths(new Date(), 5), jumlahKg: 4250, hargaPerKg: 2300, totalNilai: 9775000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 5) },
-  { id: 'h-26', gardenId: 'garden-3', tanggal: subMonths(new Date(), 4), jumlahKg: 4050, hargaPerKg: 2350, totalNilai: 9517500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
-  { id: 'h-27', gardenId: 'garden-3', tanggal: subMonths(new Date(), 3), jumlahKg: 4300, hargaPerKg: 2400, totalNilai: 10320000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 3) },
-  { id: 'h-28', gardenId: 'garden-3', tanggal: subMonths(new Date(), 2), jumlahKg: 4150, hargaPerKg: 2380, totalNilai: 9877000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-29', gardenId: 'garden-3', tanggal: subMonths(new Date(), 1), jumlahKg: 4200, hargaPerKg: 2420, totalNilai: 10164000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-24', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 6), jumlahKg: 4100, hargaPerKg: 2250, totalNilai: 9225000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 6) },
+  { id: 'h-25', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 5), jumlahKg: 4250, hargaPerKg: 2300, totalNilai: 9775000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 5) },
+  { id: 'h-26', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 4), jumlahKg: 4050, hargaPerKg: 2350, totalNilai: 9517500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
+  { id: 'h-27', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 3), jumlahKg: 4300, hargaPerKg: 2400, totalNilai: 10320000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 3) },
+  { id: 'h-28', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 2), jumlahKg: 4150, hargaPerKg: 2380, totalNilai: 9877000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-29', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 1), jumlahKg: 4200, hargaPerKg: 2420, totalNilai: 10164000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 1) },
 
   // Garden 4 - Kebun Sawit Mandiri
-  { id: 'h-30', gardenId: 'garden-4', tanggal: subMonths(new Date(), 6), jumlahKg: 2050, hargaPerKg: 2250, totalNilai: 4612500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 6) },
-  { id: 'h-31', gardenId: 'garden-4', tanggal: subMonths(new Date(), 5), jumlahKg: 2100, hargaPerKg: 2300, totalNilai: 4830000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
-  { id: 'h-32', gardenId: 'garden-4', tanggal: subMonths(new Date(), 4), jumlahKg: 1980, hargaPerKg: 2350, totalNilai: 4653000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
-  { id: 'h-33', gardenId: 'garden-4', tanggal: subMonths(new Date(), 3), jumlahKg: 2150, hargaPerKg: 2400, totalNilai: 5160000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
-  { id: 'h-34', gardenId: 'garden-4', tanggal: subMonths(new Date(), 2), jumlahKg: 2080, hargaPerKg: 2380, totalNilai: 4950400, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-35', gardenId: 'garden-4', tanggal: subMonths(new Date(), 1), jumlahKg: 2120, hargaPerKg: 2420, totalNilai: 5130400, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-30', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 6), jumlahKg: 2050, hargaPerKg: 2250, totalNilai: 4612500, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 6) },
+  { id: 'h-31', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 5), jumlahKg: 2100, hargaPerKg: 2300, totalNilai: 4830000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 5) },
+  { id: 'h-32', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 4), jumlahKg: 1980, hargaPerKg: 2350, totalNilai: 4653000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 4) },
+  { id: 'h-33', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 3), jumlahKg: 2150, hargaPerKg: 2400, totalNilai: 5160000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
+  { id: 'h-34', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 2), jumlahKg: 2080, hargaPerKg: 2380, totalNilai: 4950400, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-35', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 1), jumlahKg: 2120, hargaPerKg: 2420, totalNilai: 5130400, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
 
   // Garden 5, 6, 7, 8 - various records
-  { id: 'h-36', gardenId: 'garden-5', tanggal: subMonths(new Date(), 3), jumlahKg: 3600, hargaPerKg: 2400, totalNilai: 8640000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
-  { id: 'h-37', gardenId: 'garden-5', tanggal: subMonths(new Date(), 2), jumlahKg: 2800, hargaPerKg: 2380, totalNilai: 6664000, kualitas: 'Cukup', catatan: 'Terdampak hama', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-38', gardenId: 'garden-6', tanggal: subMonths(new Date(), 2), jumlahKg: 2700, hargaPerKg: 2380, totalNilai: 6426000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
-  { id: 'h-39', gardenId: 'garden-6', tanggal: subMonths(new Date(), 1), jumlahKg: 2650, hargaPerKg: 2420, totalNilai: 6413000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
-  { id: 'h-40', gardenId: 'garden-7', tanggal: subMonths(new Date(), 1), jumlahKg: 2550, hargaPerKg: 2420, totalNilai: 6171000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
-  { id: 'h-41', gardenId: 'garden-8', tanggal: subMonths(new Date(), 1), jumlahKg: 3450, hargaPerKg: 2420, totalNilai: 8349000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-36', gardenId: GARDEN_IDS.garden5, tanggal: subMonths(new Date(), 3), jumlahKg: 3600, hargaPerKg: 2400, totalNilai: 8640000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 3) },
+  { id: 'h-37', gardenId: GARDEN_IDS.garden5, tanggal: subMonths(new Date(), 2), jumlahKg: 2800, hargaPerKg: 2380, totalNilai: 6664000, kualitas: 'Cukup', catatan: 'Terdampak hama', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-38', gardenId: GARDEN_IDS.garden6, tanggal: subMonths(new Date(), 2), jumlahKg: 2700, hargaPerKg: 2380, totalNilai: 6426000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 2) },
+  { id: 'h-39', gardenId: GARDEN_IDS.garden6, tanggal: subMonths(new Date(), 1), jumlahKg: 2650, hargaPerKg: 2420, totalNilai: 6413000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-40', gardenId: GARDEN_IDS.garden7, tanggal: subMonths(new Date(), 1), jumlahKg: 2550, hargaPerKg: 2420, totalNilai: 6171000, kualitas: 'Baik', catatan: '', createdAt: subMonths(new Date(), 1) },
+  { id: 'h-41', gardenId: GARDEN_IDS.garden8, tanggal: subMonths(new Date(), 1), jumlahKg: 3450, hargaPerKg: 2420, totalNilai: 8349000, kualitas: 'Baik Sekali', catatan: '', createdAt: subMonths(new Date(), 1) },
 ];
 
 // ISSUES DATA
 export const issues: Issue[] = [
   {
     id: 'issue-1',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     judul: 'Serangan Ulat Api',
     deskripsi: 'Ditemukan serangan hama ulat api yang cukup parah di blok C dan D. Banyak daun yang rusak dan perlu penanganan segera.',
     areaTerdampak: 'Blok C dan D (sekitar 5 hektar)',
@@ -455,7 +467,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-2',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     judul: 'Drainase Tersumbat',
     deskripsi: 'Parit drainase di bagian utara tersumbat dan menyebabkan genangan air saat hujan.',
     areaTerdampak: 'Blok A bagian utara (2 hektar)',
@@ -467,7 +479,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-3',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     judul: 'Kekeringan Area Tertentu',
     deskripsi: 'Area di blok E mengalami kekeringan karena sistem irigasi tidak berfungsi optimal.',
     areaTerdampak: 'Blok E (3 hektar)',
@@ -480,7 +492,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-4',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     judul: 'Pohon Tumbang',
     deskripsi: 'Beberapa pohon tumbang akibat angin kencang dan menghalangi jalan akses.',
     areaTerdampak: 'Jalan utama blok B',
@@ -494,7 +506,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-5',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     judul: 'Pencurian TBS',
     deskripsi: 'Terdapat indikasi pencurian TBS di area yang jauh dari pos jaga.',
     areaTerdampak: 'Blok F bagian belakang',
@@ -508,7 +520,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-6',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     judul: 'Kualitas Buah Menurun',
     deskripsi: 'Kualitas buah di beberapa area menurun, kemungkinan karena kekurangan nutrisi.',
     areaTerdampak: 'Blok A dan B (8 hektar)',
@@ -520,7 +532,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-7',
-    gardenId: 'garden-7',
+    gardenId: GARDEN_IDS.garden7,
     judul: 'Peralatan Rusak',
     deskripsi: 'Mesin pemotong pelepah mengalami kerusakan dan perlu perbaikan atau penggantian.',
     areaTerdampak: 'Gudang alat',
@@ -532,7 +544,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-8',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     judul: 'Erosi Tanah',
     deskripsi: 'Erosi tanah terjadi di area lereng setelah hujan deras beberapa hari lalu.',
     areaTerdampak: 'Blok C area lereng (1.5 hektar)',
@@ -547,7 +559,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-9',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     judul: 'Penyakit Busuk Batang',
     deskripsi: 'Beberapa pohon menunjukkan gejala penyakit busuk batang (Ganoderma).',
     areaTerdampak: 'Blok A (sekitar 20 pohon)',
@@ -560,7 +572,7 @@ export const issues: Issue[] = [
   },
   {
     id: 'issue-10',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     judul: 'Jembatan Rusak',
     deskripsi: 'Jembatan kayu di akses ke blok C mulai rapuh dan berbahaya.',
     areaTerdampak: 'Akses jalan blok C',
@@ -576,7 +588,7 @@ export const issues: Issue[] = [
 export const maintenances: Maintenance[] = [
   {
     id: 'maint-1',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     jenisPerawatan: 'Pemupukan',
     judul: 'Pemupukan NPK Rutin',
     tanggalDijadwalkan: subDays(new Date(), 14),
@@ -591,7 +603,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-2',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     jenisPerawatan: 'Penyemprotan',
     judul: 'Penyemprotan Herbisida',
     tanggalDijadwalkan: addDays(new Date(), 3),
@@ -605,7 +617,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-3',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     jenisPerawatan: 'Pembersihan',
     judul: 'Pembersihan Parit Drainase',
     tanggalDijadwalkan: addDays(new Date(), 5),
@@ -619,7 +631,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-4',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     jenisPerawatan: 'Pemangkasan',
     judul: 'Pemangkasan Pelepah',
     tanggalDijadwalkan: subDays(new Date(), 5),
@@ -634,7 +646,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-5',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     jenisPerawatan: 'Pemupukan',
     judul: 'Aplikasi Pupuk Organik',
     tanggalDijadwalkan: addDays(new Date(), 7),
@@ -648,7 +660,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-6',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     jenisPerawatan: 'Penyemprotan',
     judul: 'Penyemprotan Insektisida',
     tanggalDijadwalkan: addDays(new Date(), 1),
@@ -661,7 +673,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-7',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     jenisPerawatan: 'Lainnya',
     judul: 'Perbaikan Sistem Irigasi',
     tanggalDijadwalkan: addDays(new Date(), 10),
@@ -674,7 +686,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-8',
-    gardenId: 'garden-7',
+    gardenId: GARDEN_IDS.garden7,
     jenisPerawatan: 'Pemupukan',
     judul: 'Aplikasi Dolomit',
     tanggalDijadwalkan: addDays(new Date(), 8),
@@ -688,7 +700,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-9',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     jenisPerawatan: 'Pembersihan',
     judul: 'Pembersihan Area Kebun',
     tanggalDijadwalkan: subDays(new Date(), 7),
@@ -703,7 +715,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-10',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     jenisPerawatan: 'Pemangkasan',
     judul: 'Pemangkasan Piringan',
     tanggalDijadwalkan: subDays(new Date(), 20),
@@ -717,7 +729,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-11',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     jenisPerawatan: 'Penyemprotan',
     judul: 'Penyemprotan Fungisida',
     tanggalDijadwalkan: addDays(new Date(), 6),
@@ -731,7 +743,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-12',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     jenisPerawatan: 'Lainnya',
     judul: 'Inspeksi Jalan Akses',
     tanggalDijadwalkan: addDays(new Date(), 14),
@@ -745,7 +757,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-13',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     jenisPerawatan: 'Pemupukan',
     judul: 'Pemupukan Urea',
     tanggalDijadwalkan: subDays(new Date(), 10),
@@ -760,7 +772,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-14',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     jenisPerawatan: 'Pembersihan',
     judul: 'Pembersihan Pelepah Mati',
     tanggalDijadwalkan: addDays(new Date(), 12),
@@ -774,7 +786,7 @@ export const maintenances: Maintenance[] = [
   },
   {
     id: 'maint-15',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     jenisPerawatan: 'Lainnya',
     judul: 'Perawatan Sumur Bor',
     tanggalDijadwalkan: addDays(new Date(), 15),
@@ -792,7 +804,7 @@ export const maintenances: Maintenance[] = [
 export const documentation: Documentation[] = [
   {
     id: 'doc-1',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     tipe: 'foto',
     judul: 'Kondisi Kebun Januari 2025',
     deskripsi: 'Foto kondisi umum kebun dari udara',
@@ -802,7 +814,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-2',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     tipe: 'foto',
     judul: 'Buah Matang Siap Panen',
     deskripsi: 'Foto buah sawit yang sudah matang dan siap dipanen',
@@ -813,7 +825,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-3',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     tipe: 'dokumen',
     judul: 'Sertifikat Tanah',
     deskripsi: 'Dokumen sertifikat kepemilikan tanah',
@@ -824,7 +836,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-4',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     tipe: 'catatan',
     judul: 'Catatan Pemupukan Oktober 2024',
     deskripsi: 'Rincian pemupukan yang dilakukan di bulan Oktober',
@@ -835,7 +847,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-5',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     tipe: 'foto',
     judul: 'Sistem Irigasi Baru',
     deskripsi: 'Foto sistem irigasi yang baru dipasang',
@@ -846,7 +858,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-6',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     tipe: 'foto',
     judul: 'Kerusakan Akibat Hama',
     deskripsi: 'Dokumentasi kerusakan daun akibat serangan hama ulat api',
@@ -857,7 +869,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-7',
-    gardenId: 'garden-6',
+    gardenId: GARDEN_IDS.garden6,
     tipe: 'catatan',
     judul: 'Rencana Kerja Semester 1 2025',
     content: 'Rencana kerja untuk semester 1 tahun 2025:\n1. Pemupukan rutin setiap 3 bulan\n2. Penyemprotan hama setiap 2 bulan\n3. Pemangkasan pelepah 2 kali setahun\n4. Target produksi: 28-30 ton per bulan\n5. Perbaikan jalan akses di Q2',
@@ -867,7 +879,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-8',
-    gardenId: 'garden-7',
+    gardenId: GARDEN_IDS.garden7,
     tipe: 'dokumen',
     judul: 'Laporan Produksi 2024',
     deskripsi: 'Laporan lengkap produksi tahun 2024',
@@ -878,7 +890,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-9',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     tipe: 'foto',
     judul: 'Proses Pemanenan',
     deskripsi: 'Tim pemanen sedang bekerja',
@@ -889,7 +901,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-10',
-    gardenId: 'garden-1',
+    gardenId: GARDEN_IDS.garden1,
     tipe: 'catatan',
     judul: 'Hasil Pertemuan Tim',
     content: 'Hasil pertemuan tim tanggal 1 November 2025:\n- Sepakat meningkatkan frekuensi monitoring hama\n- Akan menambah 2 orang tenaga kerja baru\n- Rencana investasi sistem irigasi otomatis\n- Target peningkatan produksi 10% di tahun 2026',
@@ -899,7 +911,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-11',
-    gardenId: 'garden-3',
+    gardenId: GARDEN_IDS.garden3,
     tipe: 'foto',
     judul: 'Peralatan Baru',
     deskripsi: 'Peralatan pemanen baru yang dibeli',
@@ -910,7 +922,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-12',
-    gardenId: 'garden-2',
+    gardenId: GARDEN_IDS.garden2,
     tipe: 'catatan',
     judul: 'Analisis Tanah 2024',
     content: 'Hasil analisis tanah:\n- pH: 5.8 (ideal untuk kelapa sawit)\n- N: Sedang\n- P: Rendah (perlu pemupukan P)\n- K: Sedang\n- Rekomendasi: Tambahkan pupuk fosfat dan pertahankan pemupukan NPK rutin',
@@ -920,7 +932,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-13',
-    gardenId: 'garden-4',
+    gardenId: GARDEN_IDS.garden4,
     tipe: 'foto',
     judul: 'Pohon Sawit Muda',
     deskripsi: 'Kondisi tanaman muda yang tumbuh dengan baik',
@@ -931,7 +943,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-14',
-    gardenId: 'garden-5',
+    gardenId: GARDEN_IDS.garden5,
     tipe: 'dokumen',
     judul: 'Kontrak Penjualan TBS',
     deskripsi: 'Kontrak penjualan dengan pabrik CPO',
@@ -942,7 +954,7 @@ export const documentation: Documentation[] = [
   },
   {
     id: 'doc-15',
-    gardenId: 'garden-8',
+    gardenId: GARDEN_IDS.garden8,
     tipe: 'catatan',
     judul: 'Evaluasi Kinerja Tim',
     content: 'Evaluasi kinerja tim periode Oktober-November 2025:\n- Produktivitas: Baik (target tercapai 98%)\n- Kualitas hasil: Sangat baik\n- Kehadiran: 95% (di atas target)\n- Area perbaikan: Perlu pelatihan safety untuk beberapa anggota\n- Bonus: Disetujui untuk semua anggota tim',
@@ -955,42 +967,42 @@ export const documentation: Documentation[] = [
 // EXPENSES DATA
 export const expenses: Expense[] = [
   // Garden 1 - Kebun Sawit Makmur
-  { id: 'exp-1', gardenId: 'garden-1', tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pembelian pupuk NPK 15-15-15 sebanyak 5 ton', jumlah: 12500000, catatan: 'Untuk pemupukan rutin blok A-C', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
-  { id: 'exp-2', gardenId: 'garden-1', tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja pemanen bulan Juli', jumlah: 8500000, catatan: '10 orang pemanen', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
-  { id: 'exp-3', gardenId: 'garden-1', tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida untuk pengendalian hama ulat', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
-  { id: 'exp-4', gardenId: 'garden-1', tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian egrek dan dodos baru', jumlah: 4500000, catatan: 'Untuk mengganti peralatan yang rusak', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-5', gardenId: 'garden-1', tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya angkut TBS ke pabrik', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
-  { id: 'exp-6', gardenId: 'garden-1', tanggal: subDays(new Date(), 15), kategori: 'Pupuk', deskripsi: 'Pupuk Urea 2 ton', jumlah: 5600000, catatan: '', createdAt: subDays(new Date(), 15), updatedAt: subDays(new Date(), 15) },
+  { id: 'exp-1', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pembelian pupuk NPK 15-15-15 sebanyak 5 ton', jumlah: 12500000, catatan: 'Untuk pemupukan rutin blok A-C', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
+  { id: 'exp-2', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja pemanen bulan Juli', jumlah: 8500000, catatan: '10 orang pemanen', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-3', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida untuk pengendalian hama ulat', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-4', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian egrek dan dodos baru', jumlah: 4500000, catatan: 'Untuk mengganti peralatan yang rusak', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-5', gardenId: GARDEN_IDS.garden1, tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya angkut TBS ke pabrik', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-6', gardenId: GARDEN_IDS.garden1, tanggal: subDays(new Date(), 15), kategori: 'Pupuk', deskripsi: 'Pupuk Urea 2 ton', jumlah: 5600000, catatan: '', createdAt: subDays(new Date(), 15), updatedAt: subDays(new Date(), 15) },
 
   // Garden 2 - Kebun Sawit Sejahtera
-  { id: 'exp-7', gardenId: 'garden-2', tanggal: subMonths(new Date(), 4), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 3 ton', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
-  { id: 'exp-8', gardenId: 'garden-2', tanggal: subMonths(new Date(), 3), kategori: 'Tenaga Kerja', deskripsi: 'Upah tenaga kerja pemangkasan', jumlah: 3500000, catatan: '5 orang selama 2 minggu', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
-  { id: 'exp-9', gardenId: 'garden-2', tanggal: subMonths(new Date(), 2), kategori: 'Lainnya', deskripsi: 'Perbaikan jalan akses', jumlah: 6000000, catatan: 'Perbaikan jalan utama', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-10', gardenId: 'garden-2', tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Herbisida untuk pengendalian gulma', jumlah: 2200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-7', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 4), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 3 ton', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-8', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 3), kategori: 'Tenaga Kerja', deskripsi: 'Upah tenaga kerja pemangkasan', jumlah: 3500000, catatan: '5 orang selama 2 minggu', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-9', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 2), kategori: 'Lainnya', deskripsi: 'Perbaikan jalan akses', jumlah: 6000000, catatan: 'Perbaikan jalan utama', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-10', gardenId: GARDEN_IDS.garden2, tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Herbisida untuk pengendalian gulma', jumlah: 2200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
 
   // Garden 3 - Kebun Sawit Jaya
-  { id: 'exp-11', gardenId: 'garden-3', tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan KCl untuk 32 hektar', jumlah: 15000000, catatan: '', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
-  { id: 'exp-12', gardenId: 'garden-3', tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji bulanan 15 tenaga kerja', jumlah: 12000000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
-  { id: 'exp-13', gardenId: 'garden-3', tanggal: subMonths(new Date(), 3), kategori: 'Peralatan', deskripsi: 'Mesin pemotong pelepah baru', jumlah: 8500000, catatan: 'Investasi peralatan baru', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
-  { id: 'exp-14', gardenId: 'garden-3', tanggal: subMonths(new Date(), 2), kategori: 'Transportasi', deskripsi: 'Biaya transportasi TBS 2 bulan', jumlah: 4500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-15', gardenId: 'garden-3', tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perawatan sumur bor irigasi', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-11', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 5), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan KCl untuk 32 hektar', jumlah: 15000000, catatan: '', createdAt: subMonths(new Date(), 5), updatedAt: subMonths(new Date(), 5) },
+  { id: 'exp-12', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 4), kategori: 'Tenaga Kerja', deskripsi: 'Gaji bulanan 15 tenaga kerja', jumlah: 12000000, catatan: '', createdAt: subMonths(new Date(), 4), updatedAt: subMonths(new Date(), 4) },
+  { id: 'exp-13', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 3), kategori: 'Peralatan', deskripsi: 'Mesin pemotong pelepah baru', jumlah: 8500000, catatan: 'Investasi peralatan baru', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-14', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 2), kategori: 'Transportasi', deskripsi: 'Biaya transportasi TBS 2 bulan', jumlah: 4500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-15', gardenId: GARDEN_IDS.garden3, tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perawatan sumur bor irigasi', jumlah: 3200000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
 
   // Garden 4 - Kebun Sawit Mandiri
-  { id: 'exp-16', gardenId: 'garden-4', tanggal: subMonths(new Date(), 3), kategori: 'Pupuk', deskripsi: 'Pupuk organik 4 ton', jumlah: 6500000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
-  { id: 'exp-17', gardenId: 'garden-4', tanggal: subMonths(new Date(), 2), kategori: 'Tenaga Kerja', deskripsi: 'Upah pemanen dan perawatan', jumlah: 5500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-18', gardenId: 'garden-4', tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Fungisida untuk pencegahan penyakit', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-16', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 3), kategori: 'Pupuk', deskripsi: 'Pupuk organik 4 ton', jumlah: 6500000, catatan: '', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-17', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 2), kategori: 'Tenaga Kerja', deskripsi: 'Upah pemanen dan perawatan', jumlah: 5500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-18', gardenId: GARDEN_IDS.garden4, tanggal: subMonths(new Date(), 1), kategori: 'Pestisida', deskripsi: 'Fungisida untuk pencegahan penyakit', jumlah: 2800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
 
   // Garden 5 - Kebun Sawit Berkah
-  { id: 'exp-19', gardenId: 'garden-5', tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida darurat untuk ulat api', jumlah: 5500000, catatan: 'Penanganan serangan parah', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
-  { id: 'exp-20', gardenId: 'garden-5', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 4 ton', jumlah: 10000000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-21', gardenId: 'garden-5', tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja tambahan', jumlah: 6500000, catatan: 'Untuk penanggulangan hama', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-19', gardenId: GARDEN_IDS.garden5, tanggal: subMonths(new Date(), 3), kategori: 'Pestisida', deskripsi: 'Insektisida darurat untuk ulat api', jumlah: 5500000, catatan: 'Penanganan serangan parah', createdAt: subMonths(new Date(), 3), updatedAt: subMonths(new Date(), 3) },
+  { id: 'exp-20', gardenId: GARDEN_IDS.garden5, tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK 4 ton', jumlah: 10000000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-21', gardenId: GARDEN_IDS.garden5, tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja tambahan', jumlah: 6500000, catatan: 'Untuk penanggulangan hama', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
 
   // Garden 6, 7, 8 - various records
-  { id: 'exp-22', gardenId: 'garden-6', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan dolomit', jumlah: 8500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-23', gardenId: 'garden-6', tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perbaikan sistem irigasi', jumlah: 4800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
-  { id: 'exp-24', gardenId: 'garden-7', tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk lengkap untuk kebun baru', jumlah: 9200000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-25', gardenId: 'garden-7', tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja bulanan', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
-  { id: 'exp-26', gardenId: 'garden-8', tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian alat panen modern', jumlah: 12000000, catatan: 'Investasi untuk efisiensi', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
-  { id: 'exp-27', gardenId: 'garden-8', tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya transportasi dan logistik', jumlah: 3500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
-  { id: 'exp-28', gardenId: 'garden-1', tanggal: subDays(new Date(), 5), kategori: 'Lainnya', deskripsi: 'Biaya administrasi dan perizinan', jumlah: 1500000, catatan: '', createdAt: subDays(new Date(), 5), updatedAt: subDays(new Date(), 5) },
+  { id: 'exp-22', gardenId: GARDEN_IDS.garden6, tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk NPK dan dolomit', jumlah: 8500000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-23', gardenId: GARDEN_IDS.garden6, tanggal: subMonths(new Date(), 1), kategori: 'Lainnya', deskripsi: 'Perbaikan sistem irigasi', jumlah: 4800000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-24', gardenId: GARDEN_IDS.garden7, tanggal: subMonths(new Date(), 2), kategori: 'Pupuk', deskripsi: 'Pupuk lengkap untuk kebun baru', jumlah: 9200000, catatan: '', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-25', gardenId: GARDEN_IDS.garden7, tanggal: subMonths(new Date(), 1), kategori: 'Tenaga Kerja', deskripsi: 'Gaji tenaga kerja bulanan', jumlah: 7500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-26', gardenId: GARDEN_IDS.garden8, tanggal: subMonths(new Date(), 2), kategori: 'Peralatan', deskripsi: 'Pembelian alat panen modern', jumlah: 12000000, catatan: 'Investasi untuk efisiensi', createdAt: subMonths(new Date(), 2), updatedAt: subMonths(new Date(), 2) },
+  { id: 'exp-27', gardenId: GARDEN_IDS.garden8, tanggal: subMonths(new Date(), 1), kategori: 'Transportasi', deskripsi: 'Biaya transportasi dan logistik', jumlah: 3500000, catatan: '', createdAt: subMonths(new Date(), 1), updatedAt: subMonths(new Date(), 1) },
+  { id: 'exp-28', gardenId: GARDEN_IDS.garden1, tanggal: subDays(new Date(), 5), kategori: 'Lainnya', deskripsi: 'Biaya administrasi dan perizinan', jumlah: 1500000, catatan: '', createdAt: subDays(new Date(), 5), updatedAt: subDays(new Date(), 5) },
 ];
