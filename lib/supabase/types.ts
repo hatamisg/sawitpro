@@ -16,6 +16,7 @@ export interface Database {
         Row: {
           id: string
           nama: string
+          slug: string
           lokasi: string
           lokasi_lengkap: string
           luas: number
@@ -29,6 +30,7 @@ export interface Database {
         Insert: {
           id?: string
           nama: string
+          slug?: string
           lokasi: string
           lokasi_lengkap: string
           luas: number
@@ -42,6 +44,7 @@ export interface Database {
         Update: {
           id?: string
           nama?: string
+          slug?: string
           lokasi?: string
           lokasi_lengkap?: string
           luas?: number

@@ -9,6 +9,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-1',
     nama: 'Kebun Sawit Makmur',
+    slug: 'kebun-sawit-makmur',
     lokasi: 'Riau',
     lokasiLengkap: 'Desa Suka Makmur, Kec. Tapung, Kab. Kampar, Riau',
     luas: 25.5,
@@ -22,6 +23,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-2',
     nama: 'Kebun Sawit Sejahtera',
+    slug: 'kebun-sawit-sejahtera',
     lokasi: 'Sumatera Utara',
     lokasiLengkap: 'Desa Bandar Pulau, Kec. Asahan, Kab. Asahan, Sumatera Utara',
     luas: 18.3,
@@ -35,6 +37,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-3',
     nama: 'Kebun Sawit Jaya',
+    slug: 'kebun-sawit-jaya',
     lokasi: 'Kalimantan Barat',
     lokasiLengkap: 'Desa Sungai Raya, Kec. Kubu Raya, Kab. Kubu Raya, Kalbar',
     luas: 32.0,
@@ -48,6 +51,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-4',
     nama: 'Kebun Sawit Mandiri',
+    slug: 'kebun-sawit-mandiri',
     lokasi: 'Jambi',
     lokasiLengkap: 'Desa Muara Bulian, Kec. Batang Hari, Kab. Batang Hari, Jambi',
     luas: 15.7,
@@ -61,6 +65,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-5',
     nama: 'Kebun Sawit Berkah',
+    slug: 'kebun-sawit-berkah',
     lokasi: 'Riau',
     lokasiLengkap: 'Desa Rumbio, Kec. Kampar, Kab. Kampar, Riau',
     luas: 28.4,
@@ -74,6 +79,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-6',
     nama: 'Kebun Sawit Harapan',
+    slug: 'kebun-sawit-harapan',
     lokasi: 'Sumatera Selatan',
     lokasiLengkap: 'Desa Tanjung Api-api, Kec. Banyuasin, Kab. Banyuasin, Sumsel',
     luas: 21.2,
@@ -87,6 +93,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-7',
     nama: 'Kebun Sawit Maju',
+    slug: 'kebun-sawit-maju',
     lokasi: 'Kalimantan Tengah',
     lokasiLengkap: 'Desa Pahandut, Kec. Palangkaraya, Kab. Palangkaraya, Kalteng',
     luas: 19.8,
@@ -100,6 +107,7 @@ export const gardens: Garden[] = [
   {
     id: 'garden-8',
     nama: 'Kebun Sawit Gemilang',
+    slug: 'kebun-sawit-gemilang',
     lokasi: 'Riau',
     lokasiLengkap: 'Desa Pangkalan Kerinci, Kec. Pelalawan, Kab. Pelalawan, Riau',
     luas: 26.9,

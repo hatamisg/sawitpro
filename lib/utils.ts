@@ -46,3 +46,44 @@ export function validateUUID(uuid: string, fieldName: string = 'ID'): void {
     throw new Error(`${fieldName} must be a valid UUID, got: ${uuid}`);
   }
 }
+
+/**
+ * Generate a URL-friendly slug from a string
+ * Example: "Kebun Sawit A" -> "kebun-sawit-a"
+ */
+export function generateSlug(text: string): string {
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    // Remove accents/diacritics
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    // Replace spaces with -
+    .replace(/\s+/g, '-')
+    // Remove all non-word chars except -
+    .replace(/[^\w\-]+/g, '')
+    // Replace multiple - with single -
+    .replace(/\-\-+/g, '-')
+    // Remove - from start and end
+    .replace(/^-+/, '')
+    .replace(/-+$/, '');
+}
+
+/**
+ * Check if a string is a slug or UUID
+ * Returns 'slug' if it's a slug, 'uuid' if it's a UUID, or 'unknown'
+ */
+export function identifyIdType(id: string): 'slug' | 'uuid' | 'unknown' {
+  if (isValidUUID(id)) {
+    return 'uuid';
+  }
+
+  // Check if it looks like a slug (lowercase, hyphens, alphanumeric)
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  if (slugRegex.test(id)) {
+    return 'slug';
+  }
+
+  return 'unknown';
+}

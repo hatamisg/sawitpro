@@ -1,6 +1,6 @@
-import { supabase, handleSupabaseError } from '../client';
+import { supabase, handleSupabaseError, isSupabaseConfigured } from '../client';
 import { Database } from '../types';
-import { validateUUID } from '@/lib/utils';
+import { validateUUID, identifyIdType } from '@/lib/utils';
 
 type Garden = Database['public']['Tables']['gardens']['Row'];
 type GardenInsert = Database['public']['Tables']['gardens']['Insert'];
@@ -11,6 +11,7 @@ function convertFromDb(garden: Garden) {
   return {
     id: garden.id,
     nama: garden.nama,
+    slug: garden.slug || '',
     lokasi: garden.lokasi,
     lokasiLengkap: garden.lokasi_lengkap,
     luas: Number(garden.luas),
@@ -27,6 +28,7 @@ function convertFromDb(garden: Garden) {
 function convertToDb(garden: any): GardenInsert | GardenUpdate {
   return {
     nama: garden.nama,
+    slug: garden.slug,
     lokasi: garden.lokasi,
     lokasi_lengkap: garden.lokasiLengkap,
     luas: garden.luas,
@@ -42,6 +44,10 @@ function convertToDb(garden: any): GardenInsert | GardenUpdate {
  */
 export async function getAllGardens() {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
@@ -62,17 +68,27 @@ export async function getAllGardens() {
 }
 
 /**
- * Fetch a single garden by ID
+ * Fetch a single garden by ID or slug
+ * Supports both UUID and slug formats
  */
-export async function getGardenById(id: string) {
+export async function getGardenById(idOrSlug: string) {
   try {
-    validateUUID(id, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const { data, error } = await supabase
-      .from('gardens')
-      .select('*')
-      .eq('id', id)
-      .single();
+    const idType = identifyIdType(idOrSlug);
+    let query = supabase.from('gardens').select('*');
+
+    if (idType === 'uuid') {
+      // Search by UUID
+      query = query.eq('id', idOrSlug);
+    } else {
+      // Search by slug (default for anything that's not a UUID)
+      query = query.eq('slug', idOrSlug);
+    }
+
+    const { data, error } = await query.single();
 
     if (error) throw error;
 
@@ -89,10 +105,21 @@ export async function getGardenById(id: string) {
 }
 
 /**
+ * Fetch a single garden by slug (alias for getGardenById)
+ */
+export async function getGardenBySlug(slug: string) {
+  return getGardenById(slug);
+}
+
+/**
  * Create a new garden
  */
 export async function createGarden(garden: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const gardenData = convertToDb(garden) as GardenInsert;
 
     const { data, error } = await (supabase as any)
@@ -120,6 +147,10 @@ export async function createGarden(garden: any) {
  */
 export async function updateGarden(id: string, garden: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Garden ID');
 
     const gardenData = convertToDb(garden) as GardenUpdate;
@@ -150,6 +181,10 @@ export async function updateGarden(id: string, garden: any) {
  */
 export async function deleteGarden(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Garden ID');
 
     const { error } = await supabase
@@ -176,6 +211,10 @@ export async function deleteGarden(id: string) {
  */
 export async function searchGardens(query: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')
@@ -201,6 +240,10 @@ export async function searchGardens(query: string) {
  */
 export async function getGardensByStatus(status: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     const { data, error } = await supabase
       .from('gardens')
       .select('*')

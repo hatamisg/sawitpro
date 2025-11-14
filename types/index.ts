@@ -3,6 +3,7 @@
 export interface Garden {
   id: string;
   nama: string;
+  slug: string; // URL-friendly version of nama (e.g., "kebun-sawit-a")
   lokasi: string;
   lokasiLengkap: string;
   luas: number; // in hectares

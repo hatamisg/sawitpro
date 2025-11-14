@@ -2,15 +2,20 @@
 
 import { ReactNode } from 'react';
 import { GardensProvider } from './context/GardensContext';
+import { isSupabaseConfigured } from './supabase/client';
 
 interface ProvidersProps {
   children: ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
-  // Set to true to use Supabase, false to use mock data
-  // You can also use an environment variable for this
-  const useSupabase = process.env.NEXT_PUBLIC_USE_SUPABASE === 'true';
+  // Determine whether to use Supabase:
+  // 1. If NEXT_PUBLIC_USE_SUPABASE is explicitly set, use that value
+  // 2. Otherwise, auto-detect based on whether Supabase is configured
+  const envUseSupabase = process.env.NEXT_PUBLIC_USE_SUPABASE;
+  const useSupabase = envUseSupabase !== undefined
+    ? envUseSupabase === 'true'
+    : isSupabaseConfigured();
 
   return (
     <GardensProvider useSupabase={useSupabase}>
