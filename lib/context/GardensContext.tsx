@@ -121,7 +121,7 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     }
   };
 
-  const updateGarden = async (id: string, gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>): Promise<boolean> => {
+  const updateGarden = async (idOrSlug: string, gardenData: Omit<Garden, 'id' | 'createdAt' | 'updatedAt' | 'slug'>): Promise<boolean> => {
     // Generate new slug if nama changed
     const gardenDataWithSlug = {
       ...gardenData,
@@ -129,26 +129,33 @@ export function GardensProvider({ children, useSupabase = false }: GardensProvid
     };
 
     try {
+      // First, resolve the ID if it's a slug
+      const garden = gardens.find(g => g.id === idOrSlug || g.slug === idOrSlug);
+      if (!garden) {
+        throw new Error('Garden not found');
+      }
+      const actualId = garden.id;
+
       if (shouldUseSupabase) {
         // Update in Supabase
-        console.log('📡 Updating garden in Supabase:', id);
-        const { data, error } = await gardensApi.updateGarden(id, gardenDataWithSlug);
+        console.log('📡 Updating garden in Supabase:', actualId);
+        const { data, error } = await gardensApi.updateGarden(actualId, gardenDataWithSlug);
 
         if (error) {
           throw new Error(error);
         }
 
         if (data) {
-          setGardens(prev => prev.map(g => g.id === id ? data : g));
+          setGardens(prev => prev.map(g => g.id === actualId ? data : g));
           toast.success('Kebun berhasil diperbarui di database!');
           console.log('✅ Garden updated in Supabase');
           return true;
         }
       } else {
         // Update in local state (mock)
-        console.log('📋 Updating garden in mock data (not persisted):', id);
+        console.log('📋 Updating garden in mock data (not persisted):', actualId);
         setGardens(prev => prev.map(g =>
-          g.id === id
+          g.id === actualId
             ? { ...g, ...gardenDataWithSlug, updatedAt: new Date() }
             : g
         ));
