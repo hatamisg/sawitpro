@@ -36,6 +36,9 @@ export default function DetailKebunPage() {
     notFound();
   }
 
+  // Use the actual garden UUID for all operations, not the slug from URL
+  const gardenUuid = garden.id;
+
   const handleEditGarden = async (gardenData: any) => {
     try {
       await updateGarden(id, gardenData);
@@ -47,12 +50,12 @@ export default function DetailKebunPage() {
     }
   };
 
-  // Get related data
-  const gardenHarvests = harvests.filter((h) => h.gardenId === id);
-  const gardenIssues = issues.filter((i) => i.gardenId === id);
-  const gardenMaintenances = maintenances.filter((m) => m.gardenId === id);
-  const gardenDocumentation = documentation.filter((d) => d.gardenId === id);
-  const gardenExpenses = expenses.filter((e) => e.gardenId === id);
+  // Get related data using the actual UUID
+  const gardenHarvests = harvests.filter((h) => h.gardenId === gardenUuid);
+  const gardenIssues = issues.filter((i) => i.gardenId === gardenUuid);
+  const gardenMaintenances = maintenances.filter((m) => m.gardenId === gardenUuid);
+  const gardenDocumentation = documentation.filter((d) => d.gardenId === gardenUuid);
+  const gardenExpenses = expenses.filter((e) => e.gardenId === gardenUuid);
 
   // Calculate quick stats
   const openIssues = gardenIssues.filter((i) => i.status === "Open").length;
@@ -95,23 +98,23 @@ export default function DetailKebunPage() {
             </TabsContent>
 
             <TabsContent value="panen" className="mt-6">
-              <TabPanen gardenId={id} harvests={gardenHarvests} />
+              <TabPanen gardenId={gardenUuid} harvests={gardenHarvests} />
             </TabsContent>
 
             <TabsContent value="masalah" className="mt-6">
-              <TabMasalah gardenId={id} issues={gardenIssues} />
+              <TabMasalah gardenId={gardenUuid} issues={gardenIssues} />
             </TabsContent>
 
             <TabsContent value="perawatan" className="mt-6">
-              <TabPerawatan gardenId={id} maintenances={gardenMaintenances} />
+              <TabPerawatan gardenId={gardenUuid} maintenances={gardenMaintenances} />
             </TabsContent>
 
             <TabsContent value="dokumentasi" className="mt-6">
-              <TabDokumentasi gardenId={id} documentation={gardenDocumentation} />
+              <TabDokumentasi gardenId={gardenUuid} documentation={gardenDocumentation} />
             </TabsContent>
 
             <TabsContent value="pengeluaran" className="mt-6">
-              <TabPengeluaran gardenId={id} expenses={gardenExpenses} />
+              <TabPengeluaran gardenId={gardenUuid} expenses={gardenExpenses} />
             </TabsContent>
           </Tabs>
         </div>
