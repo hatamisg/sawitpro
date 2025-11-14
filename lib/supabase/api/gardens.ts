@@ -112,6 +112,42 @@ export async function getGardenBySlug(slug: string) {
 }
 
 /**
+ * Resolve a garden identifier (UUID or slug) to its UUID
+ * This is useful for API functions that need the actual UUID for foreign key relationships
+ */
+export async function resolveGardenId(idOrSlug: string): Promise<{ id: string | null; error: string | null }> {
+  try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    const idType = identifyIdType(idOrSlug);
+
+    // If it's already a UUID, return it directly
+    if (idType === 'uuid') {
+      return { id: idOrSlug, error: null };
+    }
+
+    // If it's a slug, fetch the garden to get its UUID
+    const { data, error } = await getGardenById(idOrSlug);
+
+    if (error || !data) {
+      return {
+        id: null,
+        error: error || `Garden not found with identifier: ${idOrSlug}`,
+      };
+    }
+
+    return { id: data.id, error: null };
+  } catch (error) {
+    return {
+      id: null,
+      error: handleSupabaseError(error),
+    };
+  }
+}
+
+/**
  * Create a new garden
  */
 export async function createGarden(garden: any) {

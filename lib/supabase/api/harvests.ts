@@ -1,6 +1,7 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 type Harvest = Database['public']['Tables']['harvests']['Row'];
 type HarvestInsert = Database['public']['Tables']['harvests']['Insert'];
@@ -36,10 +37,20 @@ function convertToDb(harvest: any): HarvestInsert {
 
 /**
  * Fetch all harvests for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getHarvestsByGarden(gardenId: string) {
+export async function getHarvestsByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await supabase
       .from('harvests')
@@ -63,12 +74,24 @@ export async function getHarvestsByGarden(gardenId: string) {
 
 /**
  * Create a new harvest
+ * Accepts both UUID and slug formats for harvest.gardenId
  */
 export async function createHarvest(harvest: any) {
   try {
-    validateUUID(harvest.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const harvestData = convertToDb(harvest);
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(harvest.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update harvest with resolved UUID
+    const harvestWithResolvedId = { ...harvest, gardenId };
+    const harvestData = convertToDb(harvestWithResolvedId);
 
     const { data, error } = await (supabase as any)
       .from('harvests')
@@ -95,6 +118,10 @@ export async function createHarvest(harvest: any) {
  */
 export async function updateHarvest(id: string, harvest: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Harvest ID');
 
     const harvestData = convertToDb(harvest);
@@ -125,6 +152,10 @@ export async function updateHarvest(id: string, harvest: any) {
  */
 export async function deleteHarvest(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Harvest ID');
 
     const { error } = await supabase

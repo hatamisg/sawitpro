@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Garden } from "@/types";
+import { generateSlug } from "@/lib/utils";
 
 const gardenSchema = z.object({
   nama: z.string().min(3, "Nama kebun minimal 3 karakter"),
@@ -62,7 +63,9 @@ export default function AddGardenModal({ open, onClose, onSubmit }: AddGardenMod
   const varietas = watch("varietas");
 
   const onFormSubmit = (data: GardenFormData) => {
-    onSubmit(data);
+    // Generate slug from garden name
+    const slug = generateSlug(data.nama);
+    onSubmit({ ...data, slug });
     reset();
   };
 

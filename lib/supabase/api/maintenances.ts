@@ -1,6 +1,7 @@
 import { supabase, handleSupabaseError } from '../client';
 import { Database } from '../types';
 import { validateUUID } from '@/lib/utils';
+import { resolveGardenId } from './gardens';
 
 type Maintenance = Database['public']['Tables']['maintenances']['Row'];
 type MaintenanceInsert = Database['public']['Tables']['maintenances']['Insert'];
@@ -49,10 +50,20 @@ function convertToDb(maintenance: any): MaintenanceInsert | MaintenanceUpdate {
 
 /**
  * Fetch all maintenances for a garden
+ * Accepts both UUID and slug formats for gardenId
  */
-export async function getMaintenancesByGarden(gardenId: string) {
+export async function getMaintenancesByGarden(gardenIdOrSlug: string) {
   try {
-    validateUUID(gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(gardenIdOrSlug);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
 
     const { data, error } = await supabase
       .from('maintenances')
@@ -76,12 +87,24 @@ export async function getMaintenancesByGarden(gardenId: string) {
 
 /**
  * Create a new maintenance
+ * Accepts both UUID and slug formats for maintenance.gardenId
  */
 export async function createMaintenance(maintenance: any) {
   try {
-    validateUUID(maintenance.gardenId, 'Garden ID');
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
 
-    const maintenanceData = convertToDb(maintenance) as MaintenanceInsert;
+    // Resolve garden identifier (slug or UUID) to UUID
+    const { id: gardenId, error: resolveError } = await resolveGardenId(maintenance.gardenId);
+
+    if (resolveError || !gardenId) {
+      throw new Error(resolveError || 'Failed to resolve garden ID');
+    }
+
+    // Update maintenance with resolved UUID
+    const maintenanceWithResolvedId = { ...maintenance, gardenId };
+    const maintenanceData = convertToDb(maintenanceWithResolvedId) as MaintenanceInsert;
 
     const { data, error } = await (supabase as any)
       .from('maintenances')
@@ -108,6 +131,10 @@ export async function createMaintenance(maintenance: any) {
  */
 export async function updateMaintenance(id: string, maintenance: any) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Maintenance ID');
 
     const maintenanceData = convertToDb(maintenance) as MaintenanceUpdate;
@@ -138,6 +165,10 @@ export async function updateMaintenance(id: string, maintenance: any) {
  */
 export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' | 'Selesai' | 'Terlambat') {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Maintenance ID');
 
     const updateData: any = { status };
@@ -172,6 +203,10 @@ export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' 
  */
 export async function deleteMaintenance(id: string) {
   try {
+    if (!supabase) {
+      throw new Error('Supabase is not configured');
+    }
+
     validateUUID(id, 'Maintenance ID');
 
     const { error } = await supabase
