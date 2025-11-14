@@ -10,6 +10,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE gardens (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   nama VARCHAR(255) NOT NULL,
+  slug VARCHAR(255) UNIQUE NOT NULL,
   lokasi VARCHAR(255) NOT NULL,
   lokasi_lengkap TEXT NOT NULL,
   luas DECIMAL(10, 2) NOT NULL CHECK (luas > 0),
@@ -127,6 +128,7 @@ CREATE TABLE expenses (
 -- ============================================
 
 -- Gardens indexes
+CREATE INDEX idx_gardens_slug ON gardens(slug);
 CREATE INDEX idx_gardens_status ON gardens(status);
 CREATE INDEX idx_gardens_created_at ON gardens(created_at);
 
