@@ -96,13 +96,12 @@ export async function createHarvest(harvest: any) {
     const { data, error } = await (supabase as any)
       .from('harvests')
       .insert(harvestData)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -130,13 +129,12 @@ export async function updateHarvest(id: string, harvest: any) {
       .from('harvests')
       .update(harvestData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {

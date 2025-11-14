@@ -148,13 +148,12 @@ export async function createDocumentation(doc: any) {
     const { data, error } = await (supabase as any)
       .from('documentation')
       .insert(docData)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -182,13 +181,12 @@ export async function updateDocumentation(id: string, doc: any) {
       .from('documentation')
       .update(docData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {

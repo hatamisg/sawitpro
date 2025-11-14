@@ -109,13 +109,12 @@ export async function createIssue(issue: any) {
     const { data, error } = await (supabase as any)
       .from('issues')
       .insert(issueData)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -143,13 +142,12 @@ export async function updateIssue(id: string, issue: any) {
       .from('issues')
       .update(issueData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -183,13 +181,12 @@ export async function updateIssueStatus(id: string, status: 'Open' | 'Resolved')
       .from('issues')
       .update(updateData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {

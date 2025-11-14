@@ -109,13 +109,12 @@ export async function createMaintenance(maintenance: any) {
     const { data, error } = await (supabase as any)
       .from('maintenances')
       .insert(maintenanceData)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -143,13 +142,12 @@ export async function updateMaintenance(id: string, maintenance: any) {
       .from('maintenances')
       .update(maintenanceData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
@@ -181,13 +179,12 @@ export async function updateMaintenanceStatus(id: string, status: 'Dijadwalkan' 
       .from('maintenances')
       .update(updateData)
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) throw error;
 
     return {
-      data: data ? convertFromDb(data) : null,
+      data: data && data.length > 0 ? convertFromDb(data[0]) : null,
       error: null,
     };
   } catch (error) {
